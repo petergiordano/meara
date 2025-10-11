@@ -1,0 +1,46 @@
+# Environment and API keys
+.env
+*.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# Analysis results and outputs
+analysis_results/
+output/
+test_results/
+*.json.bak
+
+# Assistant configuration (contains IDs)
+deploy/assistant_config.json
+
+# Vector store config (contains IDs)
+deploy/vector_store_config.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

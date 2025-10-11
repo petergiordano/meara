@@ -1,0 +1,184 @@
+# MEARA Agent Builder Configuration Template
+# Copy this file and customize for your deployment
+
+# Vector Store Configuration
+vector_store:
+  name: "MEARA_Framework_Knowledge"
+  chunking:
+    max_chunk_size_tokens: 800
+    chunk_overlap_tokens: 400
+  files:
+    - "System Instructions.md"
+    - "Instruct_Marketing_Analysis.md"
+    - "Marketing Analysis Methodology.md"
+    - "Marketing Analysis Rubrics.md"
+    - "Strategic_Elements_Framework.md"
+    - "Prompt_for_DeepR_B2B_SaaS_Marketing_Insights.md"
+
+# Workflow Configuration
+workflow:
+  name: "MEARA_Marketing_Analysis"
+  description: "B2B SaaS Marketing Effectiveness Analysis with Deep Research"
+
+  # Model defaults (can override per agent)
+  defaults:
+    model: "gpt-4o"
+    temperature: 0.3
+    max_tokens: 4000
+
+  # Agent-specific configurations
+  agents:
+    research_agent:
+      model: "gpt-4o"
+      temperature: 0.3
+      tools:
+        - web_search
+        - file_search
+      enable: true  # Set false to skip if DRB always provided
+
+    evidence_collector:
+      model: "gpt-4o"
+      temperature: 0.2
+      tools:
+        - web_search
+        - file_search
+      required_searches: 9
+
+    dimension_evaluator:
+      model: "gpt-4o"
+      temperature: 0.3
+      tools:
+        - file_search
+      dimensions: 9
+
+    strategic_verifier:
+      model: "gpt-4o"
+      temperature: 0.2
+      tools:
+        - file_search
+      strategic_elements: 8
+
+    rootcause_analyst:
+      model: "gpt-4o"
+      temperature: 0.3
+      tools:
+        - file_search
+      min_root_causes: 3
+      max_root_causes: 5
+
+    recommendation_builder:
+      model: "gpt-4o"
+      temperature: 0.4  # Higher for creative recommendations
+      tools:
+        - file_search
+      min_recommendations: 5
+      max_recommendations: 7
+
+    report_assembler:
+      model: "gpt-4o"
+      temperature: 0.3
+      tools:
+        - file_search
+      output_format: "markdown"
+
+  # Logic node configurations
+  logic:
+    drb_check:
+      condition: "input.deep_research_brief != null && input.deep_research_brief.length() > 100"
+
+    strategic_priority_check:
+      condition: "state.strategic_verification.high_priority_count > 0"
+
+  # Guardrail configurations
+  guardrails:
+    citation_validator:
+      type: "hallucination_detection"
+      threshold: 0.8
+      action: "warn"  # or "block"
+
+    pii_protection:
+      type: "pii_detection"
+      action: "redact"
+      patterns:
+        - "email"
+        - "phone"
+        - "ssn"
+        - "credit_card"
+
+# Output Configuration
+output:
+  format: "markdown"
+  include_metadata: true
+  save_intermediate_outputs: true
+
+  sections:
+    - "executive_summary"
+    - "critical_issues"
+    - "findings_map"
+    - "initial_findings"
+    - "root_causes"
+    - "recommendations"
+    - "priority_matrix"
+    - "implementation_plan"
+
+# Testing Configuration
+testing:
+  test_cases:
+    - name: "Basic SaaS (No DRB)"
+      company_name: "Test Company A"
+      company_url: "https://example-a.com"
+      deep_research_brief: null
+
+    - name: "AI Company with DRB"
+      company_name: "Test Company B"
+      company_url: "https://example-b.com"
+      deep_research_brief: "test_drb_sample.md"
+
+    - name: "Enterprise B2B"
+      company_name: "Test Company C"
+      company_url: "https://example-c.com"
+      deep_research_brief: null
+
+  validation:
+    min_citations: 20
+    required_dimensions: 9
+    required_strategic_elements: 8
+    required_root_causes: 3
+
+# Cost Management
+cost:
+  budget_per_analysis: 10.00  # USD
+  alert_threshold: 8.00
+  optimization:
+    use_mini_for_simple_tasks: false
+    cache_vector_searches: true
+    limit_web_searches: false
+
+# Monitoring
+monitoring:
+  enable_logging: true
+  log_level: "INFO"  # DEBUG, INFO, WARN, ERROR
+  track_metrics:
+    - "duration"
+    - "token_usage"
+    - "cost"
+    - "citation_count"
+    - "error_rate"
+
+# Integration (optional)
+integrations:
+  google_drive:
+    enabled: false
+    folder_id: "your-folder-id"
+
+  slack:
+    enabled: false
+    webhook_url: "your-webhook-url"
+    notify_on:
+      - "completion"
+      - "error"
+
+  api:
+    enabled: false
+    endpoint: "https://your-api.com/meara"
+    auth_token: "your-token"
