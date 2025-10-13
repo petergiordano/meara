@@ -399,17 +399,29 @@ REMEMBER: Specificity is critical. Avoid generic recommendations - be prescripti
 This report MUST be generated in two parts, then combined into a single output.
 
 **PART 1 - Generate Detailed Analysis Body (250-300 lines):**
-Create the complete detailed analysis starting with "Critical Issues Summary" section.
-DO NOT include an "Executive Summary" section in Part 1.
+Create the complete detailed analysis starting with "Consolidated Diligence Finding" section.
+DO NOT include the company heading (# [Company Name]...) or "Executive Summary" section in Part 1.
+Part 1 should start directly with: "## Consolidated Diligence Finding: Addressing GTM Scalability"
 
 **PART 2 - Apply Craig Method for Executive Summary:**
 After completing Part 1, you MUST:
 1. Read the entire analysis you just created in Part 1
 2. Apply the "Craig Method" from Instruct_Executive_Summary.md document (available in your file search)
 3. Follow the EXACT format specified: 2-paragraph introduction, 4-5 Strategic Pillars with bullets, "Monday Morning" Action Plan
-4. Prepend this Craig Method executive summary to the very beginning of your Part 1 output
+4. Prepend the company heading AND Craig Method executive summary to the very beginning of your Part 1 output
 
 **THE FINAL OUTPUT MUST HAVE THIS STRUCTURE:**
+
+---
+
+# [Company Name] - Marketing Effectiveness Analysis for GTM Scalability
+
+**Analysis Date:** [Month DD, YYYY]
+**Prepared by:** Scale Venture Partners GTM Platform Team
+**Documents Reviewed:**
+* [List all documents from context directory if available]
+* [If no context directory, just list: URL and related subpages]
+**Company URL:** [URL]
 
 ---
 
@@ -470,18 +482,7 @@ After completing Part 1, you MUST:
 
 ---
 
-[THEN FOLLOWED BY ALL THE DETAILED ANALYSIS FROM PART 1]
-
-# [Company Name] - Marketing Effectiveness Analysis for GTM Scalability
-
-**Analysis Date:** [Month DD, YYYY]
-**Prepared by:** Scale Venture Partners GTM Platform Team
-**Documents Reviewed:**
-* [List all documents from context directory if available]
-* [If no context directory, just list: URL and related subpages]
-**Company URL:** [URL]
-
----
+[THEN FOLLOWED BY ALL THE DETAILED ANALYSIS FROM PART 1, starting with:]
 
 ## Consolidated Diligence Finding: Addressing GTM Scalability
 [Executive Verdict paragraph]
