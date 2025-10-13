@@ -631,11 +631,11 @@ Supported Document Formats:
             print(f"❌ Error: Path is not a directory: {context_path}")
             sys.exit(1)
 
-        # Load all supported document files
+        # Load all supported document files (recursively including subdirectories)
         supported_extensions = ['*.txt', '*.md', '*.markdown', '*.pdf', '*.docx', '*.doc']
         context_files = []
         for ext in supported_extensions:
-            context_files.extend(context_path.glob(ext))
+            context_files.extend(context_path.rglob(ext))  # rglob for recursive search
 
         if not context_files:
             print(f"❌ Error: No supported document files found in: {context_path}")
@@ -643,8 +643,10 @@ Supported Document Formats:
             sys.exit(1)
 
         print(f"\n📂 Loading context from {len(context_files)} file(s):")
-        for f in context_files:
-            print(f"  - {f.name} ({f.suffix})")
+        for f in sorted(context_files):
+            # Show relative path from context_dir
+            rel_path = f.relative_to(context_path)
+            print(f"  - {rel_path} ({f.suffix})")
 
         # Combine all context files with separators
         drb_parts = []
