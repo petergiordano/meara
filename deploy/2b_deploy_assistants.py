@@ -419,21 +419,54 @@ After completing Part 1, you MUST:
 
 ---
 
-### **Pillar 1: [Name of Your First Pillar]**
-* [Your most important, self-sufficient takeaway for this pillar.]
-* [A second, supporting takeaway.]
-* [Optional third takeaway.]
-* **Supporting Data:** [An optional, single, powerful data point from the report.]
+## Pillars & Executive Takeaways
 
-### **Pillar 2: [Name of Your Second Pillar]**
-[Same structure for Pillars 2-5]
+### **Pillar 1: [Strategic Pillar Name]**
+[1-2 sentence thematic statement capturing the essence of this pillar]
+
+* [First major finding or strategic insight]
+* [Second major finding or strategic insight]
+* [Third major finding or strategic insight]
+* [Optional fourth finding if warranted]
+
+### **Pillar 2: [Strategic Pillar Name]**
+[1-2 sentence thematic statement capturing the essence of this pillar]
+
+* [First major finding or strategic insight]
+* [Second major finding or strategic insight]
+* [Third major finding or strategic insight]
+* [Optional fourth finding if warranted]
+
+### **Pillar 3: [Strategic Pillar Name]**
+[1-2 sentence thematic statement capturing the essence of this pillar]
+
+* [First major finding or strategic insight]
+* [Second major finding or strategic insight]
+* [Third major finding or strategic insight]
+* [Optional fourth finding if warranted]
+
+### **Pillar 4: [Strategic Pillar Name]**
+[1-2 sentence thematic statement capturing the essence of this pillar]
+
+* [First major finding or strategic insight]
+* [Second major finding or strategic insight]
+* [Third major finding or strategic insight]
+* [Optional fourth finding if warranted]
 
 ---
 
-### **"Monday Morning" Action Plan**
-1. **[First Concrete Action]:** [A clear, immediate action a leader should take.]
-2. **[Second Concrete Action]:** [A second, clear, immediate action.]
-3. **[Third Concrete Action]:** [A third, clear, immediate action.]
+### **Three 'Monday Morning' Actions**
+1. **[Concrete Immediate Action]:** [Description of specific, implementable action a leader should take immediately]
+2. **[Concrete Immediate Action]:** [Description of specific, implementable action a leader should take immediately]
+3. **[Concrete Immediate Action]:** [Description of specific, implementable action a leader should take immediately]
+
+---
+
+### **Data Points to Validate Pillars**
+* **Pillar 1 ([Pillar Name]):** [Key quantitative or qualitative data point with source]
+* **Pillar 2 ([Pillar Name]):** [Key quantitative or qualitative data point with source]
+* **Pillar 3 ([Pillar Name]):** [Key quantitative or qualitative data point with source]
+* **Pillar 4 ([Pillar Name]):** [Key quantitative or qualitative data point with source]
 
 ---
 
