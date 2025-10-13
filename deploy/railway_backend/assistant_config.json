@@ -1,0 +1,62 @@
+{
+  "vector_store_id": "vs_68e95e3ceca08191a9bd1c3f4ba72977",
+  "assistants": [
+    {
+      "key": "research_agent",
+      "name": "MEARA Research Agent",
+      "assistant_id": "asst_Oae4kPGDFC8oCLTfjKzeWwmS",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    },
+    {
+      "key": "evidence_collector",
+      "name": "MEARA Evidence Collector",
+      "assistant_id": "asst_cn8Nk2EZzOrQhL9QWdLgW1NW",
+      "model": "gpt-4o",
+      "temperature": 0.2
+    },
+    {
+      "key": "dimension_evaluator",
+      "name": "MEARA Dimension Evaluator",
+      "assistant_id": "asst_IAZ12WBtkHJWevmIeOwtSJjb",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    },
+    {
+      "key": "strategic_verifier",
+      "name": "MEARA Strategic Verifier",
+      "assistant_id": "asst_ZF0HNYf6vKCGol4kPPgEALKs",
+      "model": "gpt-4o",
+      "temperature": 0.2
+    },
+    {
+      "key": "rootcause_analyst",
+      "name": "MEARA Root Cause Analyst",
+      "assistant_id": "asst_SPEuBpi0NgIPF4CubJkwfjcd",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    },
+    {
+      "key": "recommendation_builder",
+      "name": "MEARA Recommendation Builder",
+      "assistant_id": "asst_F32xIfuNw3Mw5AJDGdQCgqnl",
+      "model": "gpt-4o",
+      "temperature": 0.4
+    },
+    {
+      "key": "report_assembler",
+      "name": "MEARA Report Assembler",
+      "assistant_id": "asst_djuKzDByqWkOoR2GvDWVPBHY",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    },
+    {
+      "key": "table_generator",
+      "name": "MEARA Table Generator",
+      "assistant_id": "asst_aQThAWnvejVR2lUB7cGluYsM",
+      "model": "gpt-4o",
+      "temperature": 0.3
+    }
+  ],
+  "deployment_date": "2025-10-10"
+}

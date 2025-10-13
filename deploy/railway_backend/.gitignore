@@ -24,7 +24,9 @@ ENV/
 
 # Output files
 output/
-*.json
+output/*.json
+deepstack_output*.json
+*_results.json
 
 # DeepStack files (copied during setup)
 deepstack.py
