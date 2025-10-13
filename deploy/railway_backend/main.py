@@ -1,18 +1,20 @@
 """
 Railway Backend for DeepStack Website Analysis
-FastAPI service that runs DeepStack Collector and returns results
+FastAPI service that runs DeepStack Collector and MEARA full analysis
 """
 
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uuid
 import subprocess
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 import os
 import sys
+import shutil
+import threading
 
 app = FastAPI(
     title="DeepStack Analysis API",
@@ -33,8 +35,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory job store (use Redis/Postgres for production)
-jobs = {}
+# In-memory job stores (use Redis/Postgres for production)
+jobs = {}  # DeepStack jobs
+analysis_jobs = {}  # MEARA full analysis jobs
+
+# Progress stage mapping: 15 workflow steps → 5 user-facing stages
+STAGE_MAPPING = {
+    1: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
+    2: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
+    3: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
+    4: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
+    5: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
+    6: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
+    7: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
+    8: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
+    9: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
+    10: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
+    11: {"stage": 4, "name": "Building recommendations", "icon": "💡"},
+    12: {"stage": 4, "name": "Building recommendations", "icon": "💡"},
+    13: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
+    14: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
+    15: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
+}
 
 class AnalysisRequest(BaseModel):
     company_name: str
@@ -71,28 +93,52 @@ async def health():
     }
 
 @app.post("/api/analyze")
-async def start_analysis(request: AnalysisRequest, background_tasks: BackgroundTasks):
+async def start_analysis(
+    background_tasks: BackgroundTasks,
+    company_name: str = Form(...),
+    company_url: str = Form(...),
+    drb_file: Optional[UploadFile] = File(None)
+):
     """
-    Start DeepStack analysis for a URL
+    Start DeepStack analysis for a URL with optional Deep Research Brief upload
+
+    Accepts multipart/form-data with:
+    - company_name: Company name
+    - company_url: Company URL to analyze
+    - drb_file: Optional Deep Research Brief file (PDF, TXT, MD)
 
     Returns job_id immediately, runs analysis in background
     """
-    job_id = request.job_id or str(uuid.uuid4())
+    job_id = str(uuid.uuid4())
+
+    # Create context directory for this company
+    context_dir = Path("context_inputs") / company_name.replace(" ", "_").lower()
+    context_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save uploaded file if provided
+    drb_path = None
+    if drb_file and drb_file.filename:
+        drb_path = context_dir / f"drb_{drb_file.filename}"
+        with open(drb_path, "wb") as f:
+            shutil.copyfileobj(drb_file.file, f)
+        print(f"Saved DRB file to: {drb_path}")
 
     jobs[job_id] = {
         "status": "queued",
-        "company_name": request.company_name,
-        "company_url": request.company_url,
-        "progress": 0
+        "company_name": company_name,
+        "company_url": company_url,
+        "progress": 0,
+        "drb_file_path": str(drb_path) if drb_path else None
     }
 
     # Run DeepStack in background
-    background_tasks.add_task(run_deepstack_analysis, job_id, request.company_name, request.company_url)
+    background_tasks.add_task(run_deepstack_analysis, job_id, company_name, company_url)
 
     return {
         "job_id": job_id,
         "status": "queued",
-        "estimated_time_minutes": 2
+        "estimated_time_minutes": 2,
+        "drb_uploaded": drb_path is not None
     }
 
 async def run_deepstack_analysis(job_id: str, company_name: str, url: str):
@@ -184,7 +230,8 @@ async def get_status(job_id: str):
         "company_name": job["company_name"],
         "company_url": job["company_url"],
         "progress": job["progress"],
-        "error": job.get("error")
+        "error": job.get("error"),
+        "has_drb": job.get("drb_file_path") is not None
     }
 
 @app.get("/api/results/{job_id}")
@@ -236,6 +283,183 @@ async def debug_job(job_id: str):
     if job_id not in jobs:
         raise HTTPException(status_code=404, detail="Job not found")
     return jobs[job_id]
+
+# ============================================================================
+# MEARA FULL ANALYSIS ENDPOINTS (Sprint L.1)
+# ============================================================================
+
+@app.post("/api/analyze/full")
+async def start_full_analysis(
+    background_tasks: BackgroundTasks,
+    deepstack_job_id: str = Form(...),
+    additional_context_files: Optional[List[UploadFile]] = File(None)
+):
+    """
+    Start full MEARA analysis using completed DeepStack results
+
+    Accepts multipart/form-data with:
+    - deepstack_job_id: Job ID from completed DeepStack analysis
+    - additional_context_files: Optional additional context docs (investor memo, pitch deck, etc.)
+
+    Returns analysis_job_id immediately, runs 15-step workflow in background
+    """
+    # Validate DeepStack job exists and is completed
+    if deepstack_job_id not in jobs:
+        raise HTTPException(status_code=404, detail="DeepStack job not found")
+
+    deepstack_job = jobs[deepstack_job_id]
+    if deepstack_job["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"DeepStack analysis not complete. Status: {deepstack_job['status']}"
+        )
+
+    analysis_job_id = str(uuid.uuid4())
+
+    # Get company info from DeepStack job
+    company_name = deepstack_job["company_name"]
+    company_url = deepstack_job["company_url"]
+
+    # Get context directory
+    context_dir = Path("context_inputs") / company_name.replace(" ", "_").lower()
+    context_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save additional context files if provided
+    additional_files = []
+    if additional_context_files:
+        for file in additional_context_files:
+            if file.filename:
+                file_path = context_dir / f"context_{file.filename}"
+                with open(file_path, "wb") as f:
+                    shutil.copyfileobj(file.file, f)
+                additional_files.append(str(file_path))
+                print(f"Saved context file: {file_path}")
+
+    # Initialize analysis job
+    analysis_jobs[analysis_job_id] = {
+        "status": "queued",
+        "company_name": company_name,
+        "company_url": company_url,
+        "deepstack_job_id": deepstack_job_id,
+        "current_step": 0,
+        "current_stage": 0,
+        "stage_name": "Initializing",
+        "stage_icon": "⏳",
+        "progress": 0,
+        "additional_context_files": additional_files,
+        "drb_file_path": deepstack_job.get("drb_file_path")
+    }
+
+    # Run MEARA workflow in background
+    background_tasks.add_task(
+        run_meara_full_analysis,
+        analysis_job_id,
+        deepstack_job_id,
+        company_name,
+        company_url
+    )
+
+    return {
+        "analysis_job_id": analysis_job_id,
+        "status": "queued",
+        "estimated_time_minutes": 8,
+        "deepstack_job_id": deepstack_job_id
+    }
+
+async def run_meara_full_analysis(
+    analysis_job_id: str,
+    deepstack_job_id: str,
+    company_name: str,
+    company_url: str
+):
+    """Background task to run MEARA full analysis workflow"""
+    try:
+        analysis_jobs[analysis_job_id]["status"] = "running"
+
+        # Get DRB file path if exists
+        drb_path = analysis_jobs[analysis_job_id].get("drb_file_path")
+        drb_content = None
+        if drb_path and Path(drb_path).exists():
+            drb_content = Path(drb_path).read_text()
+
+        # Import and run orchestrator
+        # We'll import here to avoid startup issues if OpenAI not configured
+        from meara_orchestrator import run_meara_workflow, STAGE_MAPPING as WORKFLOW_STAGES
+
+        # Create progress callback to update status
+        def update_progress(step_num: int):
+            """Update progress based on workflow step"""
+            stage_info = STAGE_MAPPING.get(step_num, STAGE_MAPPING[15])
+            analysis_jobs[analysis_job_id]["current_step"] = step_num
+            analysis_jobs[analysis_job_id]["current_stage"] = stage_info["stage"]
+            analysis_jobs[analysis_job_id]["stage_name"] = stage_info["name"]
+            analysis_jobs[analysis_job_id]["stage_icon"] = stage_info["icon"]
+            analysis_jobs[analysis_job_id]["progress"] = int((step_num / 15) * 100)
+
+        # Run workflow
+        state, report_file = run_meara_workflow(
+            company_name=company_name,
+            company_url=company_url,
+            deep_research_brief=drb_content
+        )
+
+        # Mark as completed
+        analysis_jobs[analysis_job_id]["status"] = "completed"
+        analysis_jobs[analysis_job_id]["current_step"] = 15
+        analysis_jobs[analysis_job_id]["current_stage"] = 5
+        analysis_jobs[analysis_job_id]["progress"] = 100
+        analysis_jobs[analysis_job_id]["report_file"] = str(report_file)
+        analysis_jobs[analysis_job_id]["final_report"] = state.final_report
+
+    except Exception as e:
+        analysis_jobs[analysis_job_id]["status"] = "failed"
+        analysis_jobs[analysis_job_id]["error"] = str(e)
+        print(f"MEARA analysis failed: {e}")
+        import traceback
+        traceback.print_exc()
+
+@app.get("/api/analysis/status/{analysis_job_id}")
+async def get_analysis_status(analysis_job_id: str):
+    """Get MEARA analysis status with multi-stage progress"""
+    if analysis_job_id not in analysis_jobs:
+        raise HTTPException(status_code=404, detail="Analysis job not found")
+
+    job = analysis_jobs[analysis_job_id]
+    return {
+        "analysis_job_id": analysis_job_id,
+        "status": job["status"],
+        "company_name": job["company_name"],
+        "company_url": job["company_url"],
+        "current_step": job.get("current_step", 0),
+        "current_stage": job.get("current_stage", 0),
+        "stage_name": job.get("stage_name", "Initializing"),
+        "stage_icon": job.get("stage_icon", "⏳"),
+        "progress": job["progress"],
+        "error": job.get("error"),
+        "deepstack_job_id": job.get("deepstack_job_id")
+    }
+
+@app.get("/api/analysis/report/{analysis_job_id}")
+async def get_analysis_report(analysis_job_id: str):
+    """Get final MEARA analysis report"""
+    if analysis_job_id not in analysis_jobs:
+        raise HTTPException(status_code=404, detail="Analysis job not found")
+
+    job = analysis_jobs[analysis_job_id]
+
+    if job["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"Analysis not complete. Status: {job['status']}"
+        )
+
+    return {
+        "analysis_job_id": analysis_job_id,
+        "company_name": job["company_name"],
+        "company_url": job["company_url"],
+        "report_markdown": job.get("final_report", ""),
+        "report_file": job.get("report_file")
+    }
 
 def extract_domain(url: str) -> str:
     """Extract domain from URL for filename"""

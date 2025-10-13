@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // Types
 interface JobStatus {
@@ -22,6 +22,7 @@ export default function Home() {
   // State
   const [companyName, setCompanyName] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
+  const [drbFile, setDrbFile] = useState<File | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [result, setResult] = useState<DeepStackResult | null>(null);
@@ -37,14 +38,18 @@ export default function Home() {
     setError(null);
 
     try {
+      // Create FormData for file upload support
+      const formData = new FormData();
+      formData.append('company_name', companyName);
+      formData.append('company_url', companyUrl);
+      if (drbFile) {
+        formData.append('drb_file', drbFile);
+      }
+
       // Start analysis
       const response = await fetch(`${RAILWAY_API}/api/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          company_name: companyName,
-          company_url: companyUrl
-        })
+        body: formData  // Don't set Content-Type - browser sets it with boundary
       });
 
       if (!response.ok) {
@@ -119,6 +124,7 @@ export default function Home() {
   const handleReset = () => {
     setCompanyName('');
     setCompanyUrl('');
+    setDrbFile(null);
     setJobId(null);
     setStatus(null);
     setResult(null);
@@ -126,153 +132,377 @@ export default function Home() {
     setError(null);
   };
 
+  const handleContinueToFullAnalysis = () => {
+    // TODO: Will be implemented in Sprint L.1
+    alert('Full analysis orchestration coming in Sprint L.1!\n\n' +
+          'Job ID: ' + jobId + '\n' +
+          'This will run 7 OpenAI Assistants to generate a comprehensive marketing analysis report.');
+    console.log('Continue to full analysis clicked');
+    console.log('Job ID:', jobId);
+    console.log('DeepStack result:', result);
+  };
+
   return (
-    <main className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Website Analysis Tool
-        </h1>
-        <p className="text-gray-600">
-          Analyze websites with DeepStack Collector to gather comprehensive marketing and technical data
-        </p>
-      </div>
-
-      {/* Form Section */}
-      {!result && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-                Company Name
-              </label>
-              <input
-                id="companyName"
-                type="text"
-                placeholder="e.g., GGWP"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                required
-                disabled={loading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="companyUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                Company URL
-              </label>
-              <input
-                id="companyUrl"
-                type="url"
-                placeholder="https://company.com"
-                value={companyUrl}
-                onChange={(e) => setCompanyUrl(e.target.value)}
-                required
-                disabled={loading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors"
-            >
-              {loading ? 'Analyzing...' : 'Analyze Website'}
-            </button>
-          </form>
+    <main className="min-h-screen" style={{ backgroundColor: '#e5ecea' }}>
+      <div className="container mx-auto p-6 max-w-4xl">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-5xl font-bold mb-3" style={{
+            fontFamily: 'var(--font-work-sans)',
+            color: '#224f41'
+          }}>
+            Website analysis tool
+          </h1>
+          <p className="text-lg" style={{
+            fontFamily: 'var(--font-outfit)',
+            color: '#528577'
+          }}>
+            Analyze websites with DeepStack Collector to gather comprehensive marketing and technical data
+          </p>
         </div>
-      )}
 
-      {/* Progress Section */}
-      {status && loading && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Analysis in Progress</h2>
+        {/* Form Section */}
+        {!result && (
+          <div className="rounded-lg shadow-lg p-8 mb-6" style={{ backgroundColor: '#ffffff' }}>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="companyName"
+                  className="block text-sm font-medium mb-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    color: '#060119'
+                  }}
+                >
+                  Company name
+                </label>
+                <input
+                  id="companyName"
+                  type="text"
+                  placeholder="AcmeCorp.com"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    borderColor: '#7da399',
+                    color: '#060119',
+                    backgroundColor: loading ? '#f6f6f6' : '#ffffff'
+                  }}
+                />
+              </div>
 
-          <div className="space-y-3">
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Status: <span className="font-medium capitalize">{status.status}</span></span>
-              <span>{status.progress}%</span>
-            </div>
+              <div>
+                <label
+                  htmlFor="companyUrl"
+                  className="block text-sm font-medium mb-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    color: '#060119'
+                  }}
+                >
+                  Company URL
+                </label>
+                <input
+                  id="companyUrl"
+                  type="url"
+                  placeholder="https://www.AcmeCorp.com"
+                  value={companyUrl}
+                  onChange={(e) => setCompanyUrl(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    borderColor: '#7da399',
+                    color: '#060119',
+                    backgroundColor: loading ? '#f6f6f6' : '#ffffff'
+                  }}
+                />
+              </div>
 
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div
-                className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${status.progress}%` }}
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="drbFile"
+                  className="block text-sm font-medium mb-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    color: '#060119'
+                  }}
+                >
+                  Deep Research Brief (optional)
+                </label>
+                <input
+                  id="drbFile"
+                  type="file"
+                  accept=".pdf,.txt,.md,.doc,.docx"
+                  onChange={(e) => setDrbFile(e.target.files?.[0] || null)}
+                  disabled={loading}
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    borderColor: '#7da399',
+                    color: '#060119',
+                    backgroundColor: loading ? '#f6f6f6' : '#ffffff'
+                  }}
+                />
+                <p className="mt-2 text-sm" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  Have existing research? Upload a PDF, Word, TXT, or Markdown file
+                </p>
+              </div>
 
-            <p className="text-sm text-gray-500">
-              Analyzing {status.company_name} ({status.company_url})...
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Error Section */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error</h3>
-              <p className="mt-1 text-sm text-red-700">{error}</p>
-            </div>
-          </div>
-          <button
-            onClick={handleReset}
-            className="mt-4 bg-red-100 text-red-800 px-4 py-2 rounded-md hover:bg-red-200 font-medium text-sm transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      )}
-
-      {/* Results Section */}
-      {result && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Analysis Complete!</h2>
-            <div className="space-x-2">
               <button
-                onClick={handleDownload}
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 font-medium transition-colors"
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
+                style={{
+                  fontFamily: 'var(--font-outfit)',
+                  backgroundColor: '#0d71a9',
+                  color: '#ffffff'
+                }}
               >
-                Download JSON
+                {loading ? 'Analyzing...' : 'Analyze website'}
               </button>
+            </form>
+          </div>
+        )}
+
+        {/* Progress Section */}
+        {status && loading && (
+          <div className="rounded-lg shadow-lg p-8 mb-6" style={{ backgroundColor: '#ffffff' }}>
+            <h2 className="text-2xl font-bold mb-6" style={{
+              fontFamily: 'var(--font-work-sans)',
+              color: '#224f41'
+            }}>
+              Analysis in progress
+            </h2>
+
+            <div className="space-y-4">
+              <div className="flex justify-between text-sm" style={{
+                fontFamily: 'var(--font-outfit)',
+                color: '#528577'
+              }}>
+                <span>Status: <span className="font-medium capitalize" style={{ color: '#060119' }}>{status.status}</span></span>
+                <span className="font-bold" style={{ color: '#e5a819' }}>{status.progress}%</span>
+              </div>
+
+              <div className="w-full rounded-full h-4 overflow-hidden" style={{ backgroundColor: '#e5ecea' }}>
+                <div
+                  className="h-full rounded-full transition-all duration-500 ease-out"
+                  style={{
+                    width: `${status.progress}%`,
+                    backgroundColor: '#e5a819'
+                  }}
+                />
+              </div>
+
+              <p className="text-sm" style={{
+                fontFamily: 'var(--font-outfit)',
+                color: '#528577'
+              }}>
+                Analyzing {status.company_name} ({status.company_url})...
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Error Section */}
+        {error && (
+          <div className="rounded-lg p-6 mb-6 border-2" style={{
+            backgroundColor: '#faeed1',
+            borderColor: '#e5a819'
+          }}>
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6" viewBox="0 0 20 20" fill="#e5a819">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-base font-semibold" style={{
+                  fontFamily: 'var(--font-work-sans)',
+                  color: '#060119'
+                }}>
+                  Error
+                </h3>
+                <p className="mt-1 text-sm" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#060119'
+                }}>
+                  {error}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleReset}
+              className="mt-4 px-6 py-2 rounded-lg font-medium text-sm transition-colors"
+              style={{
+                fontFamily: 'var(--font-outfit)',
+                backgroundColor: '#e5a819',
+                color: '#ffffff'
+              }}
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
+        {/* Results Section */}
+        {result && (
+          <div className="rounded-lg shadow-lg p-8" style={{ backgroundColor: '#ffffff' }}>
+            <h2 className="text-3xl font-bold mb-6" style={{
+              fontFamily: 'var(--font-work-sans)',
+              color: '#224f41'
+            }}>
+              Website analysis complete!
+            </h2>
+
+            {/* Preview Section */}
+            <div className="mb-6 p-6 rounded-lg" style={{ backgroundColor: '#e5ecea' }}>
+              <h3 className="text-lg font-semibold mb-3" style={{
+                fontFamily: 'var(--font-work-sans)',
+                color: '#224f41'
+              }}>
+                What we collected
+              </h3>
+              <ul className="text-sm space-y-2 list-disc list-inside" style={{
+                fontFamily: 'var(--font-outfit)',
+                color: '#060119'
+              }}>
+                <li>Website structure and navigation</li>
+                <li>Marketing technology stack</li>
+                <li>Content and messaging analysis</li>
+                <li>Technical metadata and SEO data</li>
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {/* Download DeepStack Results */}
+              <div className="p-6 rounded-lg border-2" style={{
+                borderColor: '#7da399',
+                backgroundColor: '#ffffff'
+              }}>
+                <h4 className="text-lg font-semibold mb-2" style={{
+                  fontFamily: 'var(--font-work-sans)',
+                  color: '#224f41'
+                }}>
+                  Download results
+                </h4>
+                <p className="text-sm mb-4" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  Get the raw DeepStack data as JSON
+                </p>
+                <button
+                  onClick={handleDownload}
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    backgroundColor: '#528577',
+                    color: '#ffffff'
+                  }}
+                >
+                  Download JSON
+                </button>
+              </div>
+
+              {/* Continue to Full Analysis */}
+              <div className="p-6 rounded-lg border-2" style={{
+                borderColor: '#0d71a9',
+                backgroundColor: '#e2eef5'
+              }}>
+                <h4 className="text-lg font-semibold mb-2" style={{
+                  fontFamily: 'var(--font-work-sans)',
+                  color: '#0d71a9'
+                }}>
+                  Continue to full analysis
+                </h4>
+                <p className="text-sm mb-2" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#060119'
+                }}>
+                  Generate comprehensive marketing effectiveness report
+                </p>
+                <p className="text-xs mb-4" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  Cost: $6.45 • Time: ~8 minutes
+                </p>
+                <button
+                  onClick={handleContinueToFullAnalysis}
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    backgroundColor: '#0d71a9',
+                    color: '#ffffff'
+                  }}
+                >
+                  Continue to full analysis
+                </button>
+              </div>
+            </div>
+
+            {/* Data Preview */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-3" style={{
+                fontFamily: 'var(--font-work-sans)',
+                color: '#224f41'
+              }}>
+                Data preview
+              </h3>
+              <div className="rounded-lg p-6 max-h-[400px] overflow-auto" style={{ backgroundColor: '#f6f6f6' }}>
+                <pre className="text-xs font-mono whitespace-pre-wrap break-words" style={{ color: '#060119' }}>
+                  {JSON.stringify(result, null, 2)}
+                </pre>
+              </div>
+            </div>
+
+            {/* Start Another Analysis */}
+            <div className="text-center">
               <button
                 onClick={handleReset}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 font-medium transition-colors"
+                className="px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
+                style={{
+                  fontFamily: 'var(--font-outfit)',
+                  backgroundColor: '#7da399',
+                  color: '#ffffff'
+                }}
               >
-                Analyze Another
+                Analyze another website
               </button>
             </div>
           </div>
+        )}
 
-          <div className="bg-gray-50 rounded-lg p-4 max-h-[600px] overflow-auto">
-            <pre className="text-xs text-gray-800 font-mono whitespace-pre-wrap break-words">
-              {JSON.stringify(result, null, 2)}
-            </pre>
+        {/* Info Section */}
+        {!loading && !result && !error && (
+          <div className="rounded-lg p-6" style={{ backgroundColor: '#e2eef5' }}>
+            <h3 className="text-base font-semibold mb-3" style={{
+              fontFamily: 'var(--font-work-sans)',
+              color: '#0d71a9'
+            }}>
+              How it works
+            </h3>
+            <ul className="text-sm space-y-2 list-disc list-inside" style={{
+              fontFamily: 'var(--font-outfit)',
+              color: '#060119'
+            }}>
+              <li>Enter a company name and website URL</li>
+              <li>Our system will analyze the website using DeepStack Collector</li>
+              <li>Analysis typically takes 2-3 minutes</li>
+              <li>You'll receive comprehensive data about marketing technology, content, and more</li>
+            </ul>
           </div>
-        </div>
-      )}
-
-      {/* Info Section */}
-      {!loading && !result && !error && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">How it works</h3>
-          <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
-            <li>Enter a company name and website URL</li>
-            <li>Our system will analyze the website using DeepStack Collector</li>
-            <li>Analysis typically takes 2-3 minutes</li>
-            <li>You'll receive comprehensive data about marketing technology, content, and more</li>
-          </ul>
-        </div>
-      )}
+        )}
+      </div>
     </main>
   );
 }
