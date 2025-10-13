@@ -263,23 +263,21 @@ Structure your analysis in three distinct layers to serve different stakeholder 
 
 After completing the Executive and Strategic layers, ask if the user would like to see the Tactical layer for all dimensions or specific ones.
 
-### Report Generation: A Two-Part Process
+### Report Generation: Final Assembly and Output 
 
-To ensure the highest quality output, you will generate the report in two distinct parts.
+To ensure the highest quality output, you will generate the report by following a strict, two-step internal process, but you will only output the final, fully-assembled document.
 
-**Part 1: Generate the Detailed Analysis Report**
+**Step 1: Internally Generate the Detailed Analysis**
 
-First, generate the complete, detailed analysis report. This report should contain all sections *except* for the Executive Summary.
+First, you will internally generate the complete, detailed analysis. This includes all sections from the "Critical Issues Summary" through the "Appendix." This detailed analysis serves as the foundation for the executive summary, but **it is not the final output.**
 
-Your output for this part should begin with the "Critical Issues Summary" and continue through all subsequent sections as defined below (Root Cause Analysis, Strategic Recommendations, etc.), including the Appendix.
+ **Step 2: Generate the Executive Summary and Deliver the Final Report**
 
-**Part 2: Generate the Executive Summary and Assemble the Final Report**
+After the detailed analysis is complete, you will then synthesize the *entire* detailed analysis to create a new, narrative-driven executive summary, strictly following the "Craig" method outlined in the `Instruct_Executive_Summary` document. Finally, you will assemble the complete report by prepending the newly generated executive summary to the detailed analysis from Step 1.
 
-After you have generated the complete detailed analysis from Part 1, you will then synthesize that entire report to create a new, narrative-driven executive summary.
+**Your final, and only, output to the user must be this single, fully-assembled report, starting with the Executive Summary.** 
 
-To do this, you will apply the instructions contained in the `Instruct_Executive_Summary` document.
-
-Finally, prepend the executive summary you just created to the beginning of the detailed analysis report from Part 1 to form the single, complete, final output.
+Do not output the detailed analysis separately or ask the user if they want to proceed to the summary generation.
 
 ### Critical Issues Summary
 
