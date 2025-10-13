@@ -230,6 +230,13 @@ async def list_jobs():
         ]
     }
 
+@app.get("/api/debug/{job_id}")
+async def debug_job(job_id: str):
+    """Get full job details including stderr/stdout for debugging"""
+    if job_id not in jobs:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return jobs[job_id]
+
 def extract_domain(url: str) -> str:
     """Extract domain from URL for filename"""
     from urllib.parse import urlparse

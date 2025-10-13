@@ -1,0 +1,196 @@
+{
+  "collection_metadata": {
+    "collector_version": "1.0.0",
+    "collection_timestamp_utc": "2025-10-13T15:19:42.999517+00:00",
+    "total_urls_processed": 1,
+    "total_urls_successful": 1,
+    "total_urls_failed": 0
+  },
+  "url_analysis_results": [
+    {
+      "url": "https://www.ggwp.com",
+      "fetch_status": "success",
+      "error_details": null,
+      "fetch_timestamp_utc": "2025-10-13T15:19:49.418013+00:00",
+      "page_title": "AI-Powered Moderation for Games, Media & Online Communities | GGWP",
+      "data": {
+        "marketing_technology_data_foundation": {
+          "martech_identified": [
+            "GoogleAnalytics"
+          ],
+          "dataLayer_summary": {
+            "exists": true,
+            "total_pushes": 6,
+            "sample_pushes_structure": [
+              "Push 1 (keys): ['0', '1', '2']",
+              "Push 2 (keys): ['0', '1', 'gtm.uniqueEventId']",
+              "Push 3 (keys): ['0', '1', '2']",
+              "Push 4 (keys): ['0', '1']",
+              "Push 5 (keys): ['event', 'gtm.uniqueEventId']"
+            ],
+            "error": null
+          },
+          "cookie_consent_tools_identified": []
+        },
+        "organic_presence_content_signals": {
+          "meta_title": "AI-Powered Moderation for Games, Media & Online Communities | GGWP",
+          "meta_description": "GGWP helps brands and platforms create thriving, safe communities with AI-driven moderation, sentiment analysis, and brand suitability tools for chat, voice, and UGC.",
+          "meta_keywords": null,
+          "canonical_url": "https://www.ggwp.com/",
+          "h1_tags": [
+            "The Community Copilot​"
+          ],
+          "h2_tags": [
+            "TRUSTED BY",
+            "TEXT",
+            "Nuanced text analysis​",
+            "VOICE",
+            "Proactive voice monitoring",
+            "Easy integration",
+            "SDK for client deployment​",
+            "Customization​",
+            "PULSE",
+            "Sentiment insights",
+            "AUTOMOD",
+            "Enable AutoMod",
+            "REPUTATION",
+            "360 view of users",
+            "GROWTH",
+            "Increase ROI",
+            "COMPLIANCE",
+            "Fully privacy compliant",
+            "What customers are saying"
+          ],
+          "json_ld_scripts": [
+            {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebPage",
+                  "@id": "https://www.ggwp.com/",
+                  "url": "https://www.ggwp.com/",
+                  "name": "AI-Powered Moderation for Games, Media & Online Communities | GGWP",
+                  "isPartOf": {
+                    "@id": "https://www.ggwp.com/#website"
+                  },
+                  "about": {
+                    "@id": "https://www.ggwp.com/#organization"
+                  },
+                  "primaryImageOfPage": {
+                    "@id": "https://www.ggwp.com/#primaryimage"
+                  },
+                  "image": {
+                    "@id": "https://www.ggwp.com/#primaryimage"
+                  },
+                  "thumbnailUrl": "https://www.ggwp.com/wp-content/uploads/2023/05/ggwp_square.png",
+                  "datePublished": "2021-11-24T07:34:55+00:00",
+                  "dateModified": "2025-10-08T22:41:03+00:00",
+                  "description": "GGWP helps brands and platforms create thriving, safe communities with AI-driven moderation, sentiment analysis, and brand suitability tools for chat, voice, and UGC.",
+                  "breadcrumb": {
+                    "@id": "https://www.ggwp.com/#breadcrumb"
+                  },
+                  "inLanguage": "en-US",
+                  "potentialAction": [
+                    {
+                      "@type": "ReadAction",
+                      "target": [
+                        "https://www.ggwp.com/"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "@type": "ImageObject",
+                  "inLanguage": "en-US",
+                  "@id": "https://www.ggwp.com/#primaryimage",
+                  "url": "https://www.ggwp.com/wp-content/uploads/2023/05/ggwp_square.png",
+                  "contentUrl": "https://www.ggwp.com/wp-content/uploads/2023/05/ggwp_square.png",
+                  "width": 1024,
+                  "height": 1024,
+                  "caption": "AI community moderation company | GGWP"
+                },
+                {
+                  "@type": "BreadcrumbList",
+                  "@id": "https://www.ggwp.com/#breadcrumb",
+                  "itemListElement": [
+                    {
+                      "@type": "ListItem",
+                      "position": 1,
+                      "name": "Home"
+                    }
+                  ]
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://www.ggwp.com/#website",
+                  "url": "https://www.ggwp.com/",
+                  "name": "GGWP",
+                  "description": "Your Community Copilot",
+                  "publisher": {
+                    "@id": "https://www.ggwp.com/#organization"
+                  },
+                  "potentialAction": [
+                    {
+                      "@type": "SearchAction",
+                      "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": "https://www.ggwp.com/?s={search_term_string}"
+                      },
+                      "query-input": "required name=search_term_string"
+                    }
+                  ],
+                  "inLanguage": "en-US"
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://www.ggwp.com/#organization",
+                  "name": "GGWP: Your Community Copilot",
+                  "alternateName": "GGWP",
+                  "url": "https://www.ggwp.com/",
+                  "logo": {
+                    "@type": "ImageObject",
+                    "inLanguage": "en-US",
+                    "@id": "https://www.ggwp.com/#/schema/logo/image/",
+                    "url": "https://www.ggwp.com/wp-content/uploads/2023/05/GGWP_LOGO.png",
+                    "contentUrl": "https://www.ggwp.com/wp-content/uploads/2023/05/GGWP_LOGO.png",
+                    "width": 429,
+                    "height": 100,
+                    "caption": "GGWP: Your Community Copilot"
+                  },
+                  "image": {
+                    "@id": "https://www.ggwp.com/#/schema/logo/image/"
+                  }
+                }
+              ]
+            }
+          ],
+          "robots_meta": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+          "hreflang_tags": []
+        },
+        "user_experience_performance_clues": {
+          "viewport_meta_content": "width=device-width, initial-scale=1.0, viewport-fit=cover",
+          "identified_cdn_domains": [
+            "www.ggwp.com"
+          ],
+          "lazy_loading_images": {
+            "sampled_images": 20,
+            "with_lazy_loading": 0
+          },
+          "alt_text_images": {
+            "sampled_images": 20,
+            "with_alt_text": 20
+          }
+        },
+        "conversion_funnel_effectiveness": {
+          "identified_conversion_events": [],
+          "forms_analysis": []
+        },
+        "competitive_posture_strategic_tests": {
+          "ab_testing_tools_present": [],
+          "feature_flags_systems_identified": [],
+          "advanced_martech_indicators": []
+        }
+      }
+    }
+  ]
+}
