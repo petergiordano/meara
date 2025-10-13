@@ -13,11 +13,83 @@ from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Document processing imports (lazy loading)
+def lazy_import_docx():
+    try:
+        import docx
+        return docx
+    except ImportError:
+        print("⚠️  Warning: python-docx not installed. Install with: pip install python-docx")
+        return None
+
+def lazy_import_pypdf():
+    try:
+        import pypdf
+        return pypdf
+    except ImportError:
+        print("⚠️  Warning: pypdf not installed. Install with: pip install pypdf")
+        return None
+
 # Load environment variables
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Document processing functions
+def read_pdf(file_path):
+    """Extract text from PDF file"""
+    pypdf = lazy_import_pypdf()
+    if pypdf is None:
+        return f"[Error: Cannot read PDF - pypdf not installed. File: {file_path.name}]"
+
+    try:
+        reader = pypdf.PdfReader(str(file_path))
+        text_parts = []
+        for page_num, page in enumerate(reader.pages, 1):
+            text = page.extract_text()
+            if text.strip():
+                text_parts.append(f"[Page {page_num}]\n{text}")
+        return "\n\n".join(text_parts)
+    except Exception as e:
+        return f"[Error reading PDF {file_path.name}: {str(e)}]"
+
+def read_docx(file_path):
+    """Extract text from DOCX file"""
+    docx = lazy_import_docx()
+    if docx is None:
+        return f"[Error: Cannot read DOCX - python-docx not installed. File: {file_path.name}]"
+
+    try:
+        doc = docx.Document(str(file_path))
+        paragraphs = [para.text for para in doc.paragraphs if para.text.strip()]
+        return "\n\n".join(paragraphs)
+    except Exception as e:
+        return f"[Error reading DOCX {file_path.name}: {str(e)}]"
+
+def read_text_file(file_path):
+    """Read plain text file"""
+    try:
+        return file_path.read_text(encoding='utf-8')
+    except UnicodeDecodeError:
+        # Try with different encoding
+        try:
+            return file_path.read_text(encoding='latin-1')
+        except Exception as e:
+            return f"[Error reading text file {file_path.name}: {str(e)}]"
+
+def read_document(file_path):
+    """Read document based on file extension"""
+    suffix = file_path.suffix.lower()
+
+    if suffix == '.pdf':
+        return read_pdf(file_path)
+    elif suffix in ['.docx', '.doc']:
+        return read_docx(file_path)
+    elif suffix in ['.txt', '.md', '.markdown']:
+        return read_text_file(file_path)
+    else:
+        return f"[Unsupported file type: {suffix}. File: {file_path.name}]"
 
 # Load assistant configuration
 def load_assistant_config():
@@ -513,20 +585,86 @@ def run_meara_workflow(company_name, company_url, deep_research_brief=None):
 if __name__ == "__main__":
     # Example usage
     import sys
+    import argparse
 
-    if len(sys.argv) < 3:
-        print("Usage: python 3_orchestrate_workflow.py <company_name> <company_url> [drb_file]")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Run MEARA Marketing Effectiveness Analysis",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run with company info only (Research Agent will create DRB)
+  python 3_orchestrate_workflow.py --company "Acme Corp" --url "https://acme.com"
 
-    company_name = sys.argv[1]
-    company_url = sys.argv[2]
+  # Run with single DRB file (supports .txt, .md, .pdf, .docx)
+  python 3_orchestrate_workflow.py --company "Acme Corp" --url "https://acme.com" --drb drb.pdf
+
+  # Run with directory of context docs (supports .txt, .md, .pdf, .docx, .doc)
+  python 3_orchestrate_workflow.py --company "Acme Corp" --url "https://acme.com" --context-dir ./docs/
+
+Supported Document Formats:
+  - Text: .txt, .md, .markdown
+  - PDF: .pdf (requires: pip install pypdf)
+  - Word: .docx, .doc (requires: pip install python-docx)
+        """
+    )
+
+    parser.add_argument("-c", "--company", required=True, help="Company name")
+    parser.add_argument("-u", "--url", required=True, help="Company URL")
+    parser.add_argument("-d", "--drb", help="Path to Deep Research Brief file")
+    parser.add_argument(
+        "--context-dir",
+        help="Directory containing DRB and other context documents (.txt, .md files)"
+    )
+
+    args = parser.parse_args()
+
     drb = None
 
-    if len(sys.argv) > 3:
-        drb_file = Path(sys.argv[3])
-        if drb_file.exists():
-            drb = drb_file.read_text()
+    # Load DRB from directory or single file
+    if args.context_dir:
+        context_path = Path(args.context_dir)
+        if not context_path.exists():
+            print(f"❌ Error: Context directory does not exist: {context_path}")
+            sys.exit(1)
 
-    state, report_file = run_meara_workflow(company_name, company_url, drb)
+        if not context_path.is_dir():
+            print(f"❌ Error: Path is not a directory: {context_path}")
+            sys.exit(1)
+
+        # Load all supported document files
+        supported_extensions = ['*.txt', '*.md', '*.markdown', '*.pdf', '*.docx', '*.doc']
+        context_files = []
+        for ext in supported_extensions:
+            context_files.extend(context_path.glob(ext))
+
+        if not context_files:
+            print(f"❌ Error: No supported document files found in: {context_path}")
+            print(f"   Supported formats: .txt, .md, .pdf, .docx, .doc")
+            sys.exit(1)
+
+        print(f"\n📂 Loading context from {len(context_files)} file(s):")
+        for f in context_files:
+            print(f"  - {f.name} ({f.suffix})")
+
+        # Combine all context files with separators
+        drb_parts = []
+        for context_file in sorted(context_files):
+            content = read_document(context_file)
+            drb_parts.append(f"=== {context_file.name} ===\n\n{content}")
+
+        drb = "\n\n".join(drb_parts)
+        print(f"\n✓ Loaded {len(drb):,} characters of context\n")
+
+    elif args.drb:
+        drb_file = Path(args.drb)
+        if not drb_file.exists():
+            print(f"❌ Error: DRB file does not exist: {drb_file}")
+            sys.exit(1)
+
+        drb = read_document(drb_file)
+        print(f"\n✓ Loaded DRB from {drb_file.name} ({drb_file.suffix})\n")
+        print(f"  {len(drb):,} characters\n")
+
+    state, report_file = run_meara_workflow(args.company, args.url, drb)
 
     print(f"\n✅ Analysis complete! View report at: {report_file}")

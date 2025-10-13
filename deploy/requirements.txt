@@ -1,9 +1,7 @@
-# MEARA Agent Builder Deployment Requirements
-
-# Core dependency
+# Core dependencies
 openai>=1.0.0
+python-dotenv
 
-# Optional utilities
-python-dotenv>=1.0.0  # For .env file support
-pyyaml>=6.0          # For config file parsing
-requests>=2.31.0     # For API calls
+# Optional: Document processing (for --context-dir with PDF/DOCX files)
+pypdf
+python-docx
