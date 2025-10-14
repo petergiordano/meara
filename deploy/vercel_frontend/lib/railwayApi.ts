@@ -97,14 +97,13 @@ export async function startFullAnalysis(
 
   // Create FormData for multipart/form-data request
   const formData = new FormData();
-  formData.append('company_name', request.company_name);
-  formData.append('company_url', request.company_url);
   formData.append('deepstack_job_id', request.deepstack_job_id);
 
   // Add optional additional context files
+  // FastAPI expects multiple files with the same field name
   if (request.additional_context_files) {
-    request.additional_context_files.forEach((file, index) => {
-      formData.append(`context_file_${index}`, file);
+    request.additional_context_files.forEach((file) => {
+      formData.append('additional_context_files', file);
     });
   }
 
