@@ -27,7 +27,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://meara-app.vercel.app",  # Production Vercel URL
-        "http://localhost:3000",         # Local development
+        "http://localhost:3000",         # Local development (default)
+        "http://localhost:3002",         # Local development (alternate port)
         "http://localhost:5173",         # Vite dev server
     ],
     allow_credentials=True,
@@ -464,6 +465,27 @@ async def get_analysis_report(analysis_job_id: str):
         "report_markdown": job.get("final_report", ""),
         "report_file": job.get("report_file")
     }
+
+@app.get("/api/analysis/dashboard/test-ggwp")
+async def get_test_dashboard():
+    """
+    Test endpoint serving mock GGWP dashboard data
+
+    Use this to preview the dashboard without running a full analysis:
+    http://localhost:3000/results/test-ggwp/dashboard
+
+    Returns pre-built GGWP dashboard data for testing and demo purposes
+    """
+    mock_data_path = Path("test_mock_dashboard_data.json")
+
+    if not mock_data_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Mock data file not found. Run from railway_backend directory."
+        )
+
+    with open(mock_data_path) as f:
+        return json.load(f)
 
 @app.get("/api/analysis/dashboard/{analysis_job_id}")
 async def get_analysis_dashboard(analysis_job_id: str):
