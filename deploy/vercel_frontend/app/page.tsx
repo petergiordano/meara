@@ -161,21 +161,31 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#e5ecea' }}>
+    <main className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
       <div className="container mx-auto p-6 max-w-4xl">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-5xl font-bold mb-3" style={{
+          {/* Scale VP Logo */}
+          <div className="mb-6 flex justify-center">
+            <img
+              src="/scale_vp_logo.jpg"
+              alt="Scale Venture Partners"
+              className="h-16 w-auto"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+
+          <h1 className="text-3xl font-semibold mb-3" style={{
             fontFamily: 'var(--font-work-sans)',
             color: '#224f41'
           }}>
-            Website analysis tool
+            Marketing Effectiveness Analysis Reporting Agent (MEARA)
           </h1>
           <p className="text-lg" style={{
             fontFamily: 'var(--font-outfit)',
             color: '#528577'
           }}>
-            Analyze websites with DeepStack Collector to gather comprehensive marketing and technical data
+            AI-powered marketing effectiveness analysis for Scale Venture Partners portfolio companies
           </p>
         </div>
 
@@ -250,8 +260,14 @@ export default function Home() {
                     color: '#060119'
                   }}
                 >
-                  Deep Research Brief (optional)
+                  Deep Research Brief
                 </label>
+                <p className="mb-3 text-sm" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  Required for full analysis. Upload your own or we'll generate one automatically.
+                </p>
                 <input
                   id="drbFile"
                   type="file"
@@ -266,12 +282,6 @@ export default function Home() {
                     backgroundColor: loading ? '#f6f6f6' : '#ffffff'
                   }}
                 />
-                <p className="mt-2 text-sm" style={{
-                  fontFamily: 'var(--font-outfit)',
-                  color: '#528577'
-                }}>
-                  Have existing research? Upload a PDF, Word, TXT, or Markdown file
-                </p>
               </div>
 
               <button
@@ -399,66 +409,130 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {/* Download DeepStack Results */}
-              <div className="p-6 rounded-lg border-2" style={{
-                borderColor: '#7da399',
-                backgroundColor: '#ffffff'
-              }}>
-                <h4 className="text-lg font-semibold mb-2" style={{
+            {/* Download DeepStack Results - Thin Bar */}
+            <div className="flex items-center justify-between p-4 rounded-lg mb-4" style={{
+              backgroundColor: '#f6f6f6',
+              borderLeft: '4px solid #7da399'
+            }}>
+              <div>
+                <h4 className="text-sm font-semibold" style={{
                   fontFamily: 'var(--font-work-sans)',
                   color: '#224f41'
                 }}>
-                  Download results
+                  Download DeepStack Results
                 </h4>
-                <p className="text-sm mb-4" style={{
+                <p className="text-xs" style={{
                   fontFamily: 'var(--font-outfit)',
                   color: '#528577'
                 }}>
-                  Get the raw DeepStack data as JSON
+                  Raw JSON data from website analysis
                 </p>
-                <button
-                  onClick={handleDownload}
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
-                  style={{
-                    fontFamily: 'var(--font-outfit)',
-                    backgroundColor: '#528577',
-                    color: '#ffffff'
-                  }}
-                >
-                  Download JSON
-                </button>
               </div>
+              <button
+                onClick={handleDownload}
+                className="px-5 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90"
+                style={{
+                  fontFamily: 'var(--font-outfit)',
+                  backgroundColor: '#528577',
+                  color: '#ffffff'
+                }}
+              >
+                Download JSON
+              </button>
+            </div>
 
-              {/* Continue to Full Analysis */}
-              <div className="p-6 rounded-lg border-2" style={{
-                borderColor: '#0d71a9',
-                backgroundColor: '#e2eef5'
+            {/* Continue to Full MEARA Analysis - Full Width Card */}
+            <div className="p-6 rounded-lg border-2 mb-6" style={{
+              borderColor: '#0d71a9',
+              backgroundColor: '#e2eef5'
+            }}>
+              <h3 className="text-xl font-bold mb-4" style={{
+                fontFamily: 'var(--font-work-sans)',
+                color: '#0d71a9'
               }}>
-                <h4 className="text-lg font-semibold mb-2" style={{
-                  fontFamily: 'var(--font-work-sans)',
-                  color: '#0d71a9'
-                }}>
-                  Continue to full analysis
-                </h4>
-                <p className="text-sm mb-2" style={{
-                  fontFamily: 'var(--font-outfit)',
-                  color: '#060119'
-                }}>
-                  Generate comprehensive marketing effectiveness report
-                </p>
-                <p className="text-xs mb-4" style={{
-                  fontFamily: 'var(--font-outfit)',
-                  color: '#528577'
-                }}>
-                  Cost: $6.45 • Time: ~8 minutes
-                </p>
-                <ContinueAnalysisButton
-                  deepstackJobId={jobId || ''}
-                  companyName={companyName}
-                  onAnalysisStart={handleFullAnalysisStart}
-                />
+                Generate Full MEARA Analysis
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left: Button Section */}
+                <div className="flex flex-col justify-center items-center p-4">
+                  <ContinueAnalysisButton
+                    deepstackJobId={jobId || ''}
+                    companyName={companyName}
+                    onAnalysisStart={handleFullAnalysisStart}
+                  />
+                  <div className="mt-4 text-center">
+                    <p className="text-sm font-medium" style={{
+                      fontFamily: 'var(--font-outfit)',
+                      color: '#060119'
+                    }}>
+                      Cost: $6.45
+                    </p>
+                    <p className="text-sm font-medium" style={{
+                      fontFamily: 'var(--font-outfit)',
+                      color: '#060119'
+                    }}>
+                      Time: ~10 minutes
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: Explanation Section */}
+                <div className="space-y-4">
+                  {/* What You'll Get */}
+                  <div>
+                    <h4 className="text-sm font-bold mb-2 flex items-center" style={{
+                      fontFamily: 'var(--font-work-sans)',
+                      color: '#0d71a9'
+                    }}>
+                      📊 What You'll Get:
+                    </h4>
+                    <div className="text-sm pl-5" style={{
+                      fontFamily: 'var(--font-outfit)',
+                      color: '#060119'
+                    }}>
+                      <p className="font-semibold mb-1">Complete MEARA Analysis</p>
+                      <ul className="text-xs space-y-1 list-disc list-inside">
+                        <li>9 strategic dimensions evaluated</li>
+                        <li>Marketing effectiveness insights</li>
+                        <li>Competitive positioning analysis</li>
+                        <li>Actionable recommendations</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t" style={{ borderColor: '#7da399', opacity: 0.3 }} />
+
+                  {/* Behind the Scenes */}
+                  <div>
+                    <h4 className="text-sm font-bold mb-2 flex items-center" style={{
+                      fontFamily: 'var(--font-work-sans)',
+                      color: '#0d71a9'
+                    }}>
+                      ⚙️ {drbFile ? 'Processing Steps:' : 'Behind the Scenes:'}
+                    </h4>
+                    <div className="text-xs pl-5 space-y-1" style={{
+                      fontFamily: 'var(--font-outfit)',
+                      color: '#060119'
+                    }}>
+                      {drbFile ? (
+                        <>
+                          <p>Using your uploaded Deep Research Brief to generate comprehensive marketing effectiveness analysis</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="mb-2">We'll automatically:</p>
+                          <ol className="list-decimal list-inside space-y-1">
+                            <li>Extract ground truth from website data</li>
+                            <li>Generate strategic research brief</li>
+                            <li>Produce comprehensive MEARA analysis</li>
+                          </ol>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

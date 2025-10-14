@@ -7,7 +7,7 @@
  * - Article VII (Simplicity): Single button, clear purpose
  * - Article VIII (Anti-Abstraction): Direct API call, no layers
  *
- * Triggers full MEARA analysis (7 OpenAI Assistants, 8-10 minutes)
+ * Triggers full MEARA analysis (9 OpenAI Assistants, 10-12 minutes)
  */
 
 'use client';
@@ -120,8 +120,8 @@ export default function ContinueAnalysisButton({
 
       {!error && !isLoading && (
         <p className="text-sm text-gray-600 text-center max-w-md">
-          Full analysis will take approximately 8-10 minutes and generate a
-          comprehensive report with all 7 dimensions.
+          Full analysis will take approximately 10-12 minutes and generate a
+          comprehensive report with all 9 dimensions.
         </p>
       )}
     </div>
