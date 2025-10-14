@@ -68,11 +68,13 @@ Build a centralized PostgreSQL-backed library system where all MEARA analyses ar
 ## 🚀 Quick Start for Developers
 
 ### Prerequisites
-- [ ] Read [Project Constitution](../../../memory/constitution.md)
-- [ ] Review [SLC Framework](../../../docs/SLC-Framework.md)
-- [ ] Understand [Spec-Driven Development](../../../docs/spec-driven.md)
-- [ ] Complete Phase 1 (Results display + markdown export)
-- [ ] PostgreSQL experience (for backend developers)
+**Before starting, read these essential documents:**
+- **[CLAUDE.md](../../../CLAUDE.md)** - Development guide with commands, architecture, and workflow
+- **[Constitution](../../../memory/constitution.md)** - 12 immutable development principles
+- **[MASTER_ROADMAP.md](../MASTER_ROADMAP.md)** - Current project status and Epic priorities
+- **[SLC Framework](../../spec-driven/SLC-Framework_Simple-Lovable-Complete.md)** - Product philosophy
+- **Prerequisite:** Complete EPIC_001 Phase 1 (Results display + markdown export)
+- **Required:** PostgreSQL experience (for backend developers)
 
 ### Getting Started
 1. **Read the specs in order:**

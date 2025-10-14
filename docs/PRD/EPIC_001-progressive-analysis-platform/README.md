@@ -112,6 +112,14 @@ Error handling, mobile responsiveness, accessibility, and production deployment.
 
 ## Quick Start for Developers
 
+### Prerequisites
+**Before starting, read these essential documents:**
+- **[CLAUDE.md](../../../CLAUDE.md)** - Development guide with commands, architecture, and workflow
+- **[Constitution](../../../memory/constitution.md)** - 12 immutable development principles
+- **[MASTER_ROADMAP.md](../MASTER_ROADMAP.md)** - Current project status and Epic priorities
+
+### Development Setup
+
 ```bash
 # 1. Start Railway backend
 cd /Users/petergiordano/Documents/GitHub/meara/deploy/railway_backend
