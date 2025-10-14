@@ -1,0 +1,690 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MEA_CONFIG",
+  "description": "GTM Investment Dashboard data contract for Scale VP MEA Dashboard Application. Defines the complete structure for pre-investment GTM scalability assessment.",
+  "type": "object",
+  "required": ["companyId", "companyName", "analysisDate", "scaleVPBrand", "executiveThesis", "coreTension", "strategicPivot", "gtmEvolutionRoadmap", "actionPlan", "riskMatrix"],
+  "properties": {
+    "companyId": {
+      "type": "string",
+      "description": "Unique identifier for the company (e.g., 'comp_x_uuid')",
+      "pattern": "^comp_[a-zA-Z0-9_-]+$"
+    },
+    "companyName": {
+      "type": "string",
+      "description": "Full company name (e.g., 'AI-Solutions Inc.')",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "analysisDate": {
+      "type": "string",
+      "description": "Date of analysis in ISO 8601 format (YYYY-MM-DD)",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "scaleVPBrand": {
+      "type": "object",
+      "description": "Global branding configuration",
+      "required": ["logoUrl", "primaryColor", "secondaryColor"],
+      "properties": {
+        "logoUrl": {
+          "type": "string",
+          "description": "Path to Scale VP logo SVG relative to app root",
+          "pattern": "^/images/.*\\.svg$"
+        },
+        "primaryColor": {
+          "type": "string",
+          "description": "Primary brand color (hex code for Deep Scale Blue)",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "default": "#0A2A4C"
+        },
+        "secondaryColor": {
+          "type": "string",
+          "description": "Secondary brand color (hex code for Scale Green)",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "default": "#4CAF50"
+        }
+      }
+    },
+    "executiveThesis": {
+      "type": "object",
+      "description": "Section 1: Executive Thesis data (GTM Score, ARR, Strategic Opportunity)",
+      "required": ["gtmScore", "gtmBreakdown", "arrData", "strategicOpportunity"],
+      "properties": {
+        "gtmScore": {
+          "type": "object",
+          "description": "GTM Scalability Gauge data",
+          "required": ["value", "maxValue", "label", "colorThresholds", "tooltip"],
+          "properties": {
+            "value": {
+              "type": "number",
+              "description": "Current GTM score (0-100)",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "maxValue": {
+              "type": "number",
+              "description": "Maximum possible score",
+              "const": 100
+            },
+            "label": {
+              "type": "string",
+              "description": "Score label (e.g., 'Critical GTM Gap', 'Solid Foundation')",
+              "enum": ["Critical GTM Gap", "Foundational Gaps", "Solid Foundation", "GTM Excellence"]
+            },
+            "colorThresholds": {
+              "type": "array",
+              "description": "Color zones for gauge visualization",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": ["stop", "color"],
+                "properties": {
+                  "stop": {
+                    "type": "number",
+                    "description": "Score threshold (0-100)",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Hex color code for this zone",
+                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                  }
+                }
+              }
+            },
+            "tooltip": {
+              "type": "string",
+              "description": "Tooltip text explaining GTM score methodology",
+              "minLength": 10
+            }
+          }
+        },
+        "gtmBreakdown": {
+          "type": "array",
+          "description": "5-pillar GTM breakdown for Radar Chart Modal",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": ["pillar", "score", "benchmark"],
+            "properties": {
+              "pillar": {
+                "type": "string",
+                "description": "GTM pillar name",
+                "enum": ["Lead Gen", "MarTech", "Data/Analytics", "Playbook", "Team"]
+              },
+              "score": {
+                "type": "number",
+                "description": "Company score for this pillar",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "benchmark": {
+                "type": "number",
+                "description": "Benchmark score for comparison",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        },
+        "arrData": {
+          "type": "object",
+          "description": "ARR composition and growth pattern data",
+          "required": ["currentValue", "composition", "logos", "growthPatternSummary"],
+          "properties": {
+            "currentValue": {
+              "type": "number",
+              "description": "Current ARR in millions",
+              "minimum": 0
+            },
+            "composition": {
+              "type": "array",
+              "description": "ARR composition segments for stacked bar",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["type", "value", "color", "tooltip"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "Revenue type (e.g., 'Founder-Led', 'Early PLG')"
+                  },
+                  "value": {
+                    "type": "number",
+                    "description": "ARR value for this segment in millions",
+                    "minimum": 0
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "Hex color for this segment",
+                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                  },
+                  "tooltip": {
+                    "type": "string",
+                    "description": "Tooltip explaining this revenue source"
+                  }
+                }
+              }
+            },
+            "logos": {
+              "type": "array",
+              "description": "Client logos for ARR tooltip",
+              "items": {
+                "type": "string",
+                "pattern": "^/images/.*\\.(svg|png|jpg)$"
+              }
+            },
+            "growthPatternSummary": {
+              "type": "string",
+              "description": "Summary of growth pattern and predictability"
+            }
+          }
+        },
+        "strategicOpportunity": {
+          "type": "object",
+          "description": "Strategic opportunity and ACV expansion potential",
+          "required": ["label", "summary", "acvExpansion"],
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Opportunity level",
+              "enum": ["Low", "Medium", "High", "Transformative"]
+            },
+            "summary": {
+              "type": "string",
+              "description": "One-sentence opportunity summary"
+            },
+            "acvExpansion": {
+              "type": "object",
+              "description": "ACV expansion waterfall data",
+              "required": ["baselineAcv", "steps", "potentialAcv"],
+              "properties": {
+                "baselineAcv": {
+                  "type": "object",
+                  "required": ["value", "label"],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "description": "Baseline ACV in dollars",
+                      "minimum": 0
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Label for baseline ACV"
+                    }
+                  }
+                },
+                "steps": {
+                  "type": "array",
+                  "description": "Incremental ACV expansion steps",
+                  "items": {
+                    "type": "object",
+                    "required": ["type", "value", "label", "justification"],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["increase", "decrease"]
+                      },
+                      "value": {
+                        "type": "number",
+                        "description": "Incremental value change"
+                      },
+                      "label": {
+                        "type": "string",
+                        "description": "Step label (e.g., 'Upsell: Enterprise Security')"
+                      },
+                      "justification": {
+                        "type": "string",
+                        "description": "Business justification for this step"
+                      }
+                    }
+                  }
+                },
+                "potentialAcv": {
+                  "type": "object",
+                  "required": ["value", "label"],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "description": "Potential ACV after expansion",
+                      "minimum": 0
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Label for potential ACV"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "coreTension": {
+      "type": "object",
+      "description": "Section 2: Core Tension (Asset vs Liability)",
+      "required": ["asset", "liability", "influenceMap"],
+      "properties": {
+        "asset": {
+          "type": "object",
+          "description": "Company's core asset/moat",
+          "required": ["title", "points"],
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Asset title"
+            },
+            "points": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["text", "evidence"],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Asset description"
+                  },
+                  "evidence": {
+                    "type": "string",
+                    "description": "Evidence source citation"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "liability": {
+          "type": "object",
+          "description": "Company's core liability/gap",
+          "required": ["title", "points", "missingTechStack", "missingTechSummary"],
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Liability title"
+            },
+            "points": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["text", "evidence"],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Liability description"
+                  },
+                  "evidence": {
+                    "type": "string",
+                    "description": "Evidence source citation"
+                  }
+                }
+              }
+            },
+            "missingTechStack": {
+              "type": "array",
+              "description": "Missing tech stack logos for funnel animation",
+              "items": {
+                "type": "string",
+                "pattern": "^/images/.*\\.(svg|png)$"
+              }
+            },
+            "missingTechSummary": {
+              "type": "string",
+              "description": "Summary of missing tech stack impact"
+            }
+          }
+        },
+        "influenceMap": {
+          "type": "object",
+          "description": "Founder influence network graph data",
+          "required": ["centerNode", "connections", "summary"],
+          "properties": {
+            "centerNode": {
+              "type": "object",
+              "required": ["name", "imageUrl"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Founder/CEO name"
+                },
+                "imageUrl": {
+                  "type": "string",
+                  "pattern": "^/images/.*\\.(png|jpg)$"
+                }
+              }
+            },
+            "connections": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["name", "logoUrl", "quote"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Client name"
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "pattern": "^/images/.*\\.(svg|png)$"
+                  },
+                  "quote": {
+                    "type": "string",
+                    "description": "Client quote about founder relationship"
+                  }
+                }
+              }
+            },
+            "summary": {
+              "type": "string",
+              "description": "Summary of founder-dependency pattern"
+            }
+          }
+        }
+      }
+    },
+    "strategicPivot": {
+      "type": "object",
+      "description": "Section 3: Strategic Pivot & Competitive Positioning",
+      "required": ["title", "xAxis", "yAxis", "competitors", "marketInsight"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Section title"
+        },
+        "xAxis": {
+          "type": "object",
+          "required": ["label", "minLabel", "maxLabel"],
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "X-axis label"
+            },
+            "minLabel": {
+              "type": "string",
+              "description": "Min value label (left side)"
+            },
+            "maxLabel": {
+              "type": "string",
+              "description": "Max value label (right side)"
+            }
+          }
+        },
+        "yAxis": {
+          "type": "object",
+          "required": ["label", "minLabel", "maxLabel"],
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Y-axis label"
+            },
+            "minLabel": {
+              "type": "string",
+              "description": "Min value label (bottom)"
+            },
+            "maxLabel": {
+              "type": "string",
+              "description": "Max value label (top)"
+            }
+          }
+        },
+        "competitors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "isSelf", "x", "y"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Company/competitor name"
+              },
+              "isSelf": {
+                "type": "boolean",
+                "description": "True if this is the target company"
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "X position (0-1 normalized)"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Y position (0-1 normalized)"
+              },
+              "differentiator": {
+                "type": "string",
+                "description": "Differentiator for target company"
+              },
+              "details": {
+                "type": "string",
+                "description": "Details for competitors"
+              },
+              "detailsLink": {
+                "type": "string",
+                "description": "Optional link to detailed analysis"
+              }
+            }
+          }
+        },
+        "marketInsight": {
+          "type": "string",
+          "description": "Summary market positioning insight"
+        }
+      }
+    },
+    "gtmEvolutionRoadmap": {
+      "type": "object",
+      "description": "Section 4: GTM Evolution Roadmap (3-phase transformation)",
+      "required": ["title", "phases", "investmentImpactText"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Roadmap title"
+        },
+        "phases": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["title", "durationLabel", "elements", "tooltip"],
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Phase title",
+                "enum": ["Initial GTM State", "Accelerated GTM", "Scaled GTM"]
+              },
+              "durationLabel": {
+                "type": "string",
+                "description": "Duration/timeline label"
+              },
+              "elements": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "required": ["label", "value"],
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Element label",
+                      "enum": ["Lead Source", "Sales Motion", "Key Metric Focus", "Key Roles"]
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "Element value/description"
+                    }
+                  }
+                }
+              },
+              "tooltip": {
+                "type": "string",
+                "description": "Tooltip explaining this phase"
+              }
+            }
+          }
+        },
+        "investmentImpactText": {
+          "type": "string",
+          "description": "Investment impact statement"
+        }
+      }
+    },
+    "actionPlan": {
+      "type": "object",
+      "description": "Section 5: Action Plan & Milestones (Gantt chart)",
+      "required": ["title", "phases"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Action plan title"
+        },
+        "phases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "startMonth", "endMonth", "milestones", "kpi"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Phase name"
+              },
+              "startMonth": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "description": "Start month (1-12)"
+              },
+              "endMonth": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "description": "End month (1-12)"
+              },
+              "milestones": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["month", "label", "impact"],
+                  "properties": {
+                    "month": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12,
+                      "description": "Milestone month"
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Milestone label"
+                    },
+                    "impact": {
+                      "type": "string",
+                      "description": "Business impact description"
+                    }
+                  }
+                }
+              },
+              "kpi": {
+                "type": "object",
+                "required": ["label", "initial", "target", "unit"],
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "description": "KPI name"
+                  },
+                  "initial": {
+                    "type": "number",
+                    "description": "Initial KPI value"
+                  },
+                  "target": {
+                    "type": "number",
+                    "description": "Target KPI value"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "description": "Unit of measurement",
+                    "examples": ["%", "$", "count"]
+                  },
+                  "format": {
+                    "type": "string",
+                    "description": "Optional formatting hint",
+                    "enum": ["currency", "percentage", "number"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "riskMatrix": {
+      "type": "object",
+      "description": "Section 6: Risk Matrix & Mitigation (3x3 heatmap)",
+      "required": ["title", "xAxisLabel", "yAxisLabel", "risks"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Risk matrix title"
+        },
+        "xAxisLabel": {
+          "type": "string",
+          "description": "X-axis label (Likelihood)"
+        },
+        "yAxisLabel": {
+          "type": "string",
+          "description": "Y-axis label (Impact)"
+        },
+        "risks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "impact", "likelihood", "mitigation", "color"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Risk name"
+              },
+              "impact": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3,
+                "description": "Impact score (1=Low, 2=Medium, 3=High)"
+              },
+              "likelihood": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3,
+                "description": "Likelihood score (1=Low, 2=Medium, 3=High)"
+              },
+              "mitigation": {
+                "type": "string",
+                "description": "Mitigation strategy"
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{6}$",
+                "description": "Risk severity color (hex code)"
+              },
+              "owner": {
+                "type": "string",
+                "description": "Optional: Risk owner/accountable party"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

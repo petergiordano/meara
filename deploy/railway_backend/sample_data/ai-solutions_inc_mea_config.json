@@ -1,0 +1,297 @@
+{
+  "companyId": "comp_ai_solutions_inc",
+  "companyName": "AI-Solutions Inc.",
+  "analysisDate": "2025-10-14",
+  "scaleVPBrand": {
+    "logoUrl": "/images/scale_vp_logo.svg",
+    "primaryColor": "#0A2A4C",
+    "secondaryColor": "#4CAF50"
+  },
+  "executiveThesis": {
+    "gtmScore": {
+      "value": 15,
+      "maxValue": 100,
+      "label": "Critical GTM Gap",
+      "colorThresholds": [
+        {"stop": 20, "color": "#DC3545"},
+        {"stop": 50, "color": "#FFC107"},
+        {"stop": 100, "color": "#4CAF50"}
+      ],
+      "tooltip": "Our proprietary GTM scalability score assesses the maturity of a company's marketing and sales infrastructure. A score below 20 indicates significant foundational gaps."
+    },
+    "gtmBreakdown": [
+      {"pillar": "Lead Gen", "score": 2, "benchmark": 15},
+      {"pillar": "MarTech", "score": 1, "benchmark": 12},
+      {"pillar": "Data/Analytics", "score": 3, "benchmark": 18},
+      {"pillar": "Playbook", "score": 5, "benchmark": 20},
+      {"pillar": "Team", "score": 4, "benchmark": 15}
+    ],
+    "arrData": {
+      "currentValue": 8.5,
+      "composition": [
+        {
+          "type": "Founder-Led",
+          "value": 7.0,
+          "color": "#6C757D",
+          "tooltip": "Growth driven primarily by CEO's network and personal sales efforts."
+        },
+        {
+          "type": "Early PLG",
+          "value": 1.5,
+          "color": "#4CAF50",
+          "tooltip": "Organic sign-ups and self-serve conversions, limited monetization."
+        }
+      ],
+      "logos": ["/images/logo_client_a.svg", "/images/logo_client_b.svg"],
+      "growthPatternSummary": "Growth pattern is lumpy and unpredictable, indicating a non-systematic GTM motion."
+    },
+    "strategicOpportunity": {
+      "label": "High",
+      "summary": "Reposition from 'Dev Tool' to 'Enterprise AI Platform' to unlock strategic budgets and increase ACV.",
+      "acvExpansion": {
+        "baselineAcv": {
+          "value": 120000,
+          "label": "Baseline ACV: Current Product to Existing Buyer"
+        },
+        "steps": [
+          {
+            "type": "increase",
+            "value": 50000,
+            "label": "Upsell: Enterprise Security Module",
+            "justification": "Targets CISO budget for compliance."
+          },
+          {
+            "type": "increase",
+            "value": 130000,
+            "label": "Reposition: Data Intelligence Platform",
+            "justification": "Shifts buyer to Head of Data/Product, unlocking strategic budget."
+          }
+        ],
+        "potentialAcv": {
+          "value": 300000,
+          "label": "Potential ACV: Future State"
+        }
+      }
+    }
+  },
+  "coreTension": {
+    "asset": {
+      "title": "World-Class, AI-Native Technology",
+      "points": [
+        {
+          "text": "Proprietary model with 98% accuracy.",
+          "evidence": "Source: Tech DD Report, Appendix A."
+        },
+        {
+          "text": "Loved by technical end-users (PLG flywheel).",
+          "evidence": "Source: User Interviews."
+        }
+      ]
+    },
+    "liability": {
+      "title": "No Enterprise GTM Motion",
+      "points": [
+        {
+          "text": "Flying Blind: No CRM or Marketing Automation.",
+          "evidence": "Source: MEA, Section 4."
+        },
+        {
+          "text": "No economic buyer playbook.",
+          "evidence": "Source: Founder Interviews."
+        }
+      ],
+      "missingTechStack": [
+        "/images/logo_hubspot.svg",
+        "/images/logo_salesforce.svg",
+        "/images/logo_ga.svg"
+      ],
+      "missingTechSummary": "Complete absence of client-side optimization and testing tools. Scalable GTM impossible without instrumentation."
+    },
+    "influenceMap": {
+      "centerNode": {
+        "name": "CEO/Founder",
+        "imageUrl": "/images/ceo_founder_headshot.png"
+      },
+      "connections": [
+        {
+          "name": "Client A",
+          "logoUrl": "/images/logo_client_a.svg",
+          "quote": "'We took the meeting because of [CEO].' - *VP, Client A*"
+        },
+        {
+          "name": "Client B",
+          "logoUrl": "/images/logo_client_b.svg",
+          "quote": "'Unparalleled trust in the founder's vision.' - *CTO, Client B*"
+        }
+      ],
+      "summary": "Current growth is relationship-based, high-touch, and non-repeatable."
+    }
+  },
+  "strategicPivot": {
+    "title": "Strategic Pivot: Winning the Market",
+    "xAxis": {
+      "label": "Industry/GTM Focus",
+      "minLabel": "Horizontal",
+      "maxLabel": "Vertical/Niche"
+    },
+    "yAxis": {
+      "label": "Solution Scope",
+      "minLabel": "Point Solution",
+      "maxLabel": "Integrated Platform"
+    },
+    "competitors": [
+      {
+        "name": "AI-Solutions Inc.",
+        "isSelf": true,
+        "x": 0.8,
+        "y": 0.9,
+        "differentiator": "The only integrated platform purpose-built for AI-native enterprise workflows.",
+        "detailsLink": "#"
+      },
+      {
+        "name": "Competitor Alpha",
+        "isSelf": false,
+        "x": 0.2,
+        "y": 0.7,
+        "details": "Horizontal AI, high customization cost."
+      },
+      {
+        "name": "Competitor Beta",
+        "isSelf": false,
+        "x": 0.7,
+        "y": 0.3,
+        "details": "Niche point solution, limited scope."
+      }
+    ],
+    "marketInsight": "AI-Solutions Inc. occupies a unique and defensible position as the leading Enterprise AI Platform for its target vertical."
+  },
+  "gtmEvolutionRoadmap": {
+    "title": "GTM Transformation Journey",
+    "phases": [
+      {
+        "title": "Initial GTM State",
+        "durationLabel": "Current (Q1-Q2)",
+        "elements": [
+          {"label": "Lead Source", "value": "Founder Network & Early PLG"},
+          {"label": "Sales Motion", "value": "Self-Serve / High-touch Founder Demos"},
+          {"label": "Key Metric Focus", "value": "Product Adoption & Initial ARR"},
+          {"label": "Key Roles", "value": "Technical Founders, Early CSMs"}
+        ],
+        "tooltip": "Current GTM is highly reliant on founder's personal network and early product-led growth signals."
+      },
+      {
+        "title": "Accelerated GTM",
+        "durationLabel": "Months 1-12 (Q3-Q6)",
+        "elements": [
+          {"label": "Lead Source", "value": "Marketing Campaigns (Paid/Organic), SDR Outbound"},
+          {"label": "Sales Motion", "value": "Structured Sales-Assist, Mid-Market AEs"},
+          {"label": "Key Metric Focus", "value": "Marketing Sourced Pipeline, Sales Cycle Reduction"},
+          {"label": "Key Roles", "value": "VP Marketing (Performance), Head of Sales"}
+        ],
+        "tooltip": "Investment enables critical GTM hires and program spend, building foundational processes."
+      },
+      {
+        "title": "Scaled GTM",
+        "durationLabel": "Year 2+ Vision (Q7+)",
+        "elements": [
+          {"label": "Lead Source", "value": "Robust Demand Gen, Channel Partnerships"},
+          {"label": "Sales Motion", "value": "Enterprise AEs, Strategic Account Management"},
+          {"label": "Key Metric Focus", "value": "LTV:CAC, Net Retention, Market Share"},
+          {"label": "Key Roles", "value": "CRO, Global Sales Leaders"}
+        ],
+        "tooltip": "Achieved through sustained GTM excellence and market leadership, driving predictable revenue."
+      }
+    ],
+    "investmentImpactText": "Scale VP's capital & GTM expertise fuels this transition."
+  },
+  "actionPlan": {
+    "title": "Key Action Plan & Milestones",
+    "phases": [
+      {
+        "name": "Phase 1: Instrument & Build",
+        "startMonth": 1,
+        "endMonth": 3,
+        "milestones": [
+          {
+            "month": 1,
+            "label": "Hire VP Marketing",
+            "impact": "Critical hire to lead GTM transformation."
+          },
+          {
+            "month": 2,
+            "label": "Deploy MarTech Stack",
+            "impact": "Enable tracking and automation."
+          },
+          {
+            "month": 3,
+            "label": "Define ICP & Segmentation",
+            "impact": "Focus GTM efforts on high-value segments."
+          }
+        ],
+        "kpi": {
+          "label": "Funnel Conversion Rate (Website to MQL)",
+          "initial": 0,
+          "target": 5,
+          "unit": "%"
+        }
+      },
+      {
+        "name": "Phase 2: Commercialize & Scale",
+        "startMonth": 4,
+        "endMonth": 12,
+        "milestones": [
+          {
+            "month": 4,
+            "label": "Launch First Campaign",
+            "impact": "Generate initial marketing-sourced pipeline."
+          },
+          {
+            "month": 6,
+            "label": "Systematize Sales Playbook",
+            "impact": "Enable new AEs to be productive faster."
+          },
+          {
+            "month": 9,
+            "label": "Pilot Enterprise Strategy",
+            "impact": "Validate new ACV model and buyer persona."
+          }
+        ],
+        "kpi": {
+          "label": "Marketing-Sourced Pipeline",
+          "initial": 0,
+          "target": 500000,
+          "unit": "$",
+          "format": "currency"
+        }
+      }
+    ]
+  },
+  "riskMatrix": {
+    "title": "Critical Risks & Mitigation",
+    "xAxisLabel": "Likelihood",
+    "yAxisLabel": "Impact",
+    "risks": [
+      {
+        "name": "Execution Risk",
+        "impact": 3,
+        "likelihood": 3,
+        "mitigation": "Hire CRO post-investment (Priority 1).",
+        "color": "#DC3545"
+      },
+      {
+        "name": "PLG-to-Enterprise Transition",
+        "impact": 2,
+        "likelihood": 3,
+        "mitigation": "Build dedicated sales-assist function.",
+        "color": "#FFC107"
+      },
+      {
+        "name": "Competitive Intrusion",
+        "impact": 3,
+        "likelihood": 2,
+        "mitigation": "Proactive category thought leadership.",
+        "color": "#FFC107"
+      }
+    ]
+  }
+}

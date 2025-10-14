@@ -487,10 +487,83 @@ async def get_test_dashboard():
     with open(mock_data_path) as f:
         return json.load(f)
 
+# ============================================================================
+# GTM INVESTMENT DASHBOARD ENDPOINTS (Sprint L2)
+# ============================================================================
+
+@app.get("/api/gtm/dashboard/{company_id}")
+async def get_gtm_dashboard(company_id: str):
+    """
+    Get GTM Investment Dashboard data for Scale VP investment partners
+
+    Sprint L2 endpoint for pre-investment GTM scalability assessment.
+    Returns MEA_CONFIG data transformed for frontend rendering.
+
+    Args:
+        company_id: Company identifier (e.g., "comp_ai_solutions_inc")
+
+    Returns:
+        Transformed GTM dashboard data with:
+        - Executive Thesis (GTM score, ARR composition, ACV expansion)
+        - Core Tension (asset/liability, influence map)
+        - Strategic Pivot (competitive positioning)
+        - GTM Evolution (3-phase roadmap)
+        - Action Plan (Gantt chart with milestones)
+        - Risk Matrix (3x3 heatmap)
+
+    Example:
+        GET /api/gtm/dashboard/comp_ai_solutions_inc
+    """
+    # Load MEA_CONFIG from sample data
+    # In production, this would query a database
+    sample_data_dir = Path("sample_data")
+
+    # Map company_id to filename
+    company_file_map = {
+        "comp_ai_solutions_inc": "ai-solutions_inc_mea_config.json"
+    }
+
+    if company_id not in company_file_map:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Company not found: {company_id}. Available: {list(company_file_map.keys())}"
+        )
+
+    config_file = sample_data_dir / company_file_map[company_id]
+
+    if not config_file.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"Configuration file not found: {config_file}"
+        )
+
+    # Load MEA_CONFIG
+    try:
+        with open(config_file) as f:
+            mea_config = json.load(f)
+    except json.JSONDecodeError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Invalid JSON in config file: {e}"
+        )
+
+    # Transform using library
+    from gtm_dashboard_transformer import transform_mea_config
+
+    try:
+        transformed_data = transform_mea_config(mea_config)
+        return transformed_data
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Transformation failed: {str(e)}"
+        )
+
+
 @app.get("/api/analysis/dashboard/{analysis_job_id}")
 async def get_analysis_dashboard(analysis_job_id: str):
     """
-    Get structured dashboard data for interactive visualization
+    Get structured dashboard data for interactive visualization (Sprint L1)
 
     Returns JSON structured for the interactive dashboard:
     - Executive summary with top 3-5 recommendations
