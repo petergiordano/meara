@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import ContinueAnalysisButton from '@/components/ContinueAnalysisButton';
+import ProgressTracker from '@/components/ProgressTracker';
+import ReportViewer from '@/components/ReportViewer';
+import DownloadButton from '@/components/DownloadButton';
 
 // Types
 interface JobStatus {
@@ -28,6 +32,12 @@ export default function Home() {
   const [result, setResult] = useState<DeepStackResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Sprint L.1: Full Analysis State
+  const [fullAnalysisJobId, setFullAnalysisJobId] = useState<string | null>(null);
+  const [showProgressTracker, setShowProgressTracker] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [reportMarkdown, setReportMarkdown] = useState('');
 
   const RAILWAY_API = process.env.NEXT_PUBLIC_RAILWAY_API || 'http://localhost:8000';
 
@@ -132,14 +142,22 @@ export default function Home() {
     setError(null);
   };
 
-  const handleContinueToFullAnalysis = () => {
-    // TODO: Will be implemented in Sprint L.1
-    alert('Full analysis orchestration coming in Sprint L.1!\n\n' +
-          'Job ID: ' + jobId + '\n' +
-          'This will run 7 OpenAI Assistants to generate a comprehensive marketing analysis report.');
-    console.log('Continue to full analysis clicked');
-    console.log('Job ID:', jobId);
-    console.log('DeepStack result:', result);
+  // Sprint L.1: Full Analysis Handlers
+  const handleFullAnalysisStart = (analysisJobId: string) => {
+    setFullAnalysisJobId(analysisJobId);
+    setShowProgressTracker(true);
+    setShowReport(false);
+  };
+
+  const handleProgressComplete = (reportReady: boolean) => {
+    if (reportReady) {
+      setShowProgressTracker(false);
+      setShowReport(true);
+    } else {
+      // Analysis failed
+      setError('Full analysis failed. Please try again.');
+      setShowProgressTracker(false);
+    }
   };
 
   return (
@@ -436,17 +454,11 @@ export default function Home() {
                 }}>
                   Cost: $6.45 • Time: ~8 minutes
                 </p>
-                <button
-                  onClick={handleContinueToFullAnalysis}
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
-                  style={{
-                    fontFamily: 'var(--font-outfit)',
-                    backgroundColor: '#0d71a9',
-                    color: '#ffffff'
-                  }}
-                >
-                  Continue to full analysis
-                </button>
+                <ContinueAnalysisButton
+                  deepstackJobId={jobId || ''}
+                  companyName={companyName}
+                  onAnalysisStart={handleFullAnalysisStart}
+                />
               </div>
             </div>
 
@@ -482,8 +494,75 @@ export default function Home() {
           </div>
         )}
 
+        {/* Sprint L.1: Progress Tracker Section */}
+        {showProgressTracker && fullAnalysisJobId && (
+          <div className="mb-6">
+            <ProgressTracker
+              analysisJobId={fullAnalysisJobId}
+              onComplete={handleProgressComplete}
+            />
+          </div>
+        )}
+
+        {/* Sprint L.1: Report Viewer Section */}
+        {showReport && fullAnalysisJobId && (
+          <div className="space-y-6">
+            <div className="rounded-lg shadow-lg p-8" style={{ backgroundColor: '#ffffff' }}>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold mb-4" style={{
+                  fontFamily: 'var(--font-work-sans)',
+                  color: '#224f41'
+                }}>
+                  Full analysis complete!
+                </h2>
+                <p className="text-base mb-6" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  Your comprehensive MEARA marketing effectiveness report is ready. Download it in your preferred format below.
+                </p>
+
+                {/* Download Buttons */}
+                <div className="flex gap-4 mb-6">
+                  <DownloadButton
+                    format="markdown"
+                    reportMarkdown={reportMarkdown}
+                    companyName={companyName}
+                  />
+                  <DownloadButton
+                    format="pdf"
+                    reportMarkdown={reportMarkdown}
+                    companyName={companyName}
+                  />
+                </div>
+              </div>
+
+              {/* Report Display */}
+              <ReportViewer
+                analysisJobId={fullAnalysisJobId}
+                companyName={companyName}
+              />
+
+              {/* Start Another Analysis */}
+              <div className="mt-6 text-center">
+                <button
+                  onClick={handleReset}
+                  className="px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    backgroundColor: '#7da399',
+                    color: '#ffffff'
+                  }}
+                >
+                  Analyze another website
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Info Section */}
-        {!loading && !result && !error && (
+        {!loading && !result && !error && !showProgressTracker && !showReport && (
           <div className="rounded-lg p-6" style={{ backgroundColor: '#e2eef5' }}>
             <h3 className="text-base font-semibold mb-3" style={{
               fontFamily: 'var(--font-work-sans)',
