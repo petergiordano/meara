@@ -184,6 +184,90 @@ MEARA (Marketing Effectiveness Analysis Reporting Agent) is Scale Venture Partne
 
 ---
 
+### ⏳ Sprint L2: GTM Investment Dashboard (Planned)
+**Target:** November 2024 (3-4 weeks)
+**Duration:** 20-25 days
+**Branch:** `feature/epic-002-sprint-l2-gtm-dashboard`
+
+**Purpose:** Create a **pre-investment** dashboard for Scale VP partners to assess GTM scalability and investment thesis for prospective portfolio companies. Complements Sprint L1 (post-investment MEARA analysis) with pre-investment GTM assessment.
+
+**Key Differences from Sprint L1:**
+| Aspect | Sprint L1 (MEARA) | Sprint L2 (GTM) |
+|--------|------------------|-----------------|
+| **Audience** | Portfolio company executives | Scale VP investment partners |
+| **Use Case** | Post-investment marketing optimization | Pre-investment GTM assessment |
+| **Data Source** | MEARA markdown reports | `MEA_CONFIG.json` (manual input) |
+| **Focus** | 9 marketing dimensions | GTM scalability, ARR health, strategic positioning |
+| **Visualizations** | Radar charts, priority matrix | Gauges, waterfall charts, network graphs, Gantt charts |
+
+**Planned Deliverables:**
+
+**Backend:**
+- `MEA_CONFIG.json` schema definition - Investment thesis data contract
+- `gtm_dashboard_transformer.py` - Library-first transformer (Article I)
+- `test_gtm_dashboard_api.py` - 20+ contract tests (TDD, Article III)
+- `main.py` - New GET `/api/gtm/dashboard/{companyId}` endpoint
+
+**Frontend:**
+- **Section 1: Executive Thesis**
+  - `GtmScalabilityGauge.tsx` - Half-circle gauge with color zones (0-100 scale)
+  - `RadarChartModal.tsx` - GTM breakdown vs. benchmarks (5 pillars: Lead Gen, MarTech, Data/Analytics, Playbook, Team)
+  - `ArrStackedBar.tsx` - Revenue composition (Founder-Led vs. Early PLG)
+  - `StrategicOpportunityDonut.tsx` - ACV expansion visualization
+  - `AcvWaterfallModal.tsx` - Baseline → Potential ACV waterfall chart
+
+- **Section 2: Core Tension**
+  - `LeakyFunnel.tsx` - SVG animated funnel showing untracked stages
+  - `InfluenceMap.tsx` - Network graph (CEO/Founder → Clients with quotes)
+
+- **Section 3: Strategic Pivot**
+  - `CompetitiveMoatMatrix.tsx` - 2x2 positioning matrix (Industry Focus × Solution Scope)
+
+- **Section 4: GTM Evolution**
+  - `GtmEvolutionRoadmap.tsx` - 3-phase timeline (Current → Accelerated → Scaled)
+
+- **Section 5: Action Plan**
+  - `GanttChart.tsx` - Milestones with KPIs (Phase 1: Instrument & Build, Phase 2: Commercialize & Scale)
+
+- **Section 6: Risk Management**
+  - `RiskHeatmap.tsx` - 3x3 grid (Likelihood × Impact)
+
+- **Global Components:**
+  - `DashboardLayout.tsx` - App shell with Scale VP branding
+  - `Modal.tsx` - Reusable overlay system
+  - `Tooltip.tsx` - Consistent hover behavior
+
+**Dashboard Features:**
+- GTM Scalability Score (0-100 with color thresholds: Red <20, Amber 20-50, Green >50)
+- ARR composition analysis with client logos
+- ACV expansion model (Baseline → +Security → +Repositioning)
+- Founder-dependency visualization (influence map)
+- Competitive positioning matrix
+- 3-phase GTM transformation roadmap
+- 12-month Gantt chart with milestones and KPIs
+- Risk assessment heatmap with mitigation strategies
+
+**Constitutional Compliance:**
+- ✅ Article I: Library-First - All components reusable across dashboards
+- ✅ Article III: Test-First - 20+ contract tests before implementation
+- ✅ Article VII: Simplicity - Direct D3.js/Recharts usage, no wrappers
+- ✅ Article VIII: Anti-Abstraction - Use framework features directly
+- ✅ Article IX: Integration Tests - Test with real `MEA_CONFIG.json` data
+
+**Success Criteria:**
+- All 20+ tests passing (contract + integration)
+- Dashboard renders correctly with sample data (AI-Solutions Inc.)
+- < 2 seconds load time for GTM dashboard endpoint
+- All 6 sections interactive with modals/tooltips
+- Mobile-responsive (optimized for desktop, works on tablet)
+- User acceptance from 2-3 Scale partners
+
+**Documentation:**
+- Full functional spec: [`FUNCTIONAL_SPEC_sprint-l2-gtm-dashboard.md`](./EPIC_002-interactive-dashboard/FUNCTIONAL_SPEC_sprint-l2-gtm-dashboard.md)
+- See spec for complete `MEA_CONFIG.json` schema and component details
+
+---
+
 ### Milestones
 
 #### ⏳ Milestone 2: Dashboard Polish & Testing (1 week)

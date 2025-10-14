@@ -13,8 +13,9 @@
 | Document | Purpose | Status |
 |----------|---------|--------|
 | [Design Specification](./DESIGN_SPEC_interactive-dashboard.md) | 5-day design sprint plan for dashboard UI/UX | ✅ Complete |
+| [Sprint L1 Functional Spec](./FUNCTIONAL_SPEC_sprint-l1-marketing-dashboard.md) | Post-investment MEARA marketing dashboard (9 dimensions) | ✅ Implemented |
+| [Sprint L2 Functional Spec](./FUNCTIONAL_SPEC_sprint-l2-gtm-dashboard.md) | Pre-investment GTM scalability dashboard (6 sections) | ⏳ Planned |
 | [Product Requirements (PRD)](./PRD_interactive-dashboard.md) | What & why we're building | ⏳ Not Started |
-| [Functional Specification](./FUNCTIONAL_SPEC_interactive-dashboard.md) | Feature details and business logic | ⏳ Not Started |
 | [Technical Specification](./TECHNICAL_SPEC_interactive-dashboard.md) | Architecture and implementation | ⏳ Not Started |
 | [Sprint Planning](./SPRINTS.md) | Timeline, phases, and tasks | ⏳ Not Started |
 
@@ -54,12 +55,13 @@ Create a rich, interactive web-based dashboard that presents MEARA insights with
 
 | Milestone | Target Date | Status | Notes |
 |-----------|-------------|--------|-------|
-| Design Sprint Complete | TBD | ⏳ Pending | 5-day sprint to create prototype |
+| Sprint L1: MEARA Marketing Dashboard | Oct 14, 2024 | ✅ Complete | Post-investment 9-dimension analysis dashboard |
+| Sprint L2: GTM Investment Dashboard | Nov 2024 | ⏳ Planned | Pre-investment GTM scalability assessment (3-4 weeks) |
+| Design Sprint Complete | TBD | ⏳ Pending | 5-day sprint for advanced features |
 | Specs Complete | TBD | ⏳ Pending | All spec docs reviewed and approved |
-| Development Start | TBD | ⏳ Pending | Feature branch created, first commit |
-| MVP Dashboard | TBD | ⏳ Pending | Top recommendations + dimension cards |
-| Full Dashboard | TBD | ⏳ Pending | Interactive drill-down with evidence linking |
-| Production Launch | TBD | ⏳ Pending | General availability |
+| Advanced Visualizations | TBD | ⏳ Pending | Timeline viz, comparison mode, dimension trends |
+| Evidence Navigation | TBD | ⏳ Pending | Interactive drill-down with evidence linking |
+| Production Launch | TBD | ⏳ Pending | General availability for all dashboards |
 
 ---
 
