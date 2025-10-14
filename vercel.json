@@ -1,18 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "deploy/vercel_frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "deploy/vercel_frontend/.next"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/deploy/vercel_frontend/$1"
-    }
-  ]
+  "buildCommand": "cd deploy/vercel_frontend && npm install && npm run build",
+  "outputDirectory": "deploy/vercel_frontend/.next",
+  "installCommand": "npm install --prefix deploy/vercel_frontend"
 }
