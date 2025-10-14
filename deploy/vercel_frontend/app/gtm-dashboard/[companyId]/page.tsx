@@ -289,25 +289,22 @@ export default function GtmDashboardPage() {
           <div className="text-sm text-gray-500">
             Section 1 of 6
           </div>
-          <button
-            className="px-6 py-3 rounded-lg font-medium transition-colors"
-            style={{
-              backgroundColor: '#0A2A4C',
-              color: '#FFFFFF'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#0d3354'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#0A2A4C'
-            }}
-            onClick={() => {
-              // Future: Navigate to Section 2 (Core Tension)
-              console.log('Navigate to Section 2 - Core Tension (not yet implemented)')
-            }}
-          >
-            Next Section: Core Tension →
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-gray-400 italic">
+              Sections 2-6 coming soon
+            </div>
+            <button
+              className="px-6 py-3 rounded-lg font-medium transition-colors cursor-not-allowed opacity-50"
+              style={{
+                backgroundColor: '#0A2A4C',
+                color: '#FFFFFF'
+              }}
+              disabled
+              title="Sections 2-6 not yet implemented"
+            >
+              Next Section: Core Tension →
+            </button>
+          </div>
         </div>
       </main>
 
