@@ -1,0 +1,311 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MEARA Dashboard Data Schema",
+  "description": "JSON schema contract for the MEARA Interactive Dashboard API endpoint",
+  "type": "object",
+  "required": [
+    "company_info",
+    "analysis_metadata",
+    "executive_summary",
+    "dimensions",
+    "root_causes",
+    "recommendations"
+  ],
+  "properties": {
+    "company_info": {
+      "type": "object",
+      "required": ["name", "url"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Company website URL"
+        }
+      }
+    },
+    "analysis_metadata": {
+      "type": "object",
+      "required": ["analysis_date", "analysis_job_id"],
+      "properties": {
+        "analysis_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date analysis was completed"
+        },
+        "analysis_job_id": {
+          "type": "string",
+          "description": "Unique identifier for this analysis"
+        },
+        "total_time_seconds": {
+          "type": "number",
+          "description": "Total analysis time in seconds"
+        }
+      }
+    },
+    "executive_summary": {
+      "type": "object",
+      "required": ["top_recommendations", "critical_issues"],
+      "properties": {
+        "top_recommendations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "description": "Top 3-5 actionable recommendations",
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "impact", "effort", "category"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique recommendation ID"
+              },
+              "title": {
+                "type": "string",
+                "description": "Short recommendation title"
+              },
+              "summary": {
+                "type": "string",
+                "description": "1-2 sentence summary"
+              },
+              "impact": {
+                "type": "string",
+                "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+                "description": "Business impact level"
+              },
+              "effort": {
+                "type": "string",
+                "enum": ["HIGH", "MEDIUM", "LOW"],
+                "description": "Implementation effort"
+              },
+              "roi_score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10,
+                "description": "Calculated ROI score (0-10)"
+              },
+              "quick_win": {
+                "type": "boolean",
+                "description": "True if HIGH impact + LOW effort"
+              },
+              "category": {
+                "type": "string",
+                "description": "Which dimension(s) this addresses"
+              },
+              "why": {
+                "type": "string",
+                "description": "Strategic rationale (full detail)"
+              },
+              "what": {
+                "type": "string",
+                "description": "Specific actions to take"
+              },
+              "how": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Step-by-step implementation guide"
+              },
+              "expected_outcome": {
+                "type": "string",
+                "description": "What success looks like"
+              },
+              "supporting_evidence_ids": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "References to evidence sections"
+              }
+            }
+          }
+        },
+        "critical_issues": {
+          "type": "array",
+          "description": "Urgent problems requiring immediate attention",
+          "items": {
+            "type": "object",
+            "required": ["title", "severity", "business_impact"],
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Issue title"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["CRITICAL", "HIGH"],
+                "description": "Issue severity"
+              },
+              "business_impact": {
+                "type": "string",
+                "description": "Description of business consequences"
+              },
+              "affected_dimensions": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Dimensions impacted by this issue"
+              }
+            }
+          }
+        },
+        "overall_verdict": {
+          "type": "string",
+          "description": "Executive 2-3 sentence verdict on GTM scalability"
+        }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "description": "Analysis of all 9 marketing dimensions",
+      "patternProperties": {
+        "^[a-z_]+$": {
+          "type": "object",
+          "required": ["name", "score", "rating"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Human-readable dimension name"
+            },
+            "score": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Dimension score (0-100)"
+            },
+            "rating": {
+              "type": "string",
+              "enum": ["EXCEPTIONAL", "COMPETENT", "NEEDS_IMPROVEMENT", "CRITICAL_GAP"],
+              "description": "Qualitative rating"
+            },
+            "summary": {
+              "type": "string",
+              "description": "1-2 sentence dimension summary"
+            },
+            "strengths": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Key strengths in this dimension"
+            },
+            "opportunities": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Key opportunities for improvement"
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "finding": {"type": "string"},
+                  "source": {"type": "string"}
+                }
+              },
+              "description": "Supporting evidence with citations"
+            },
+            "sub_elements": {
+              "type": "object",
+              "description": "Detailed sub-element ratings (for drill-down)",
+              "patternProperties": {
+                "^[a-z_]+$": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "rating": {"type": "string"},
+                    "assessment": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "root_causes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "description": "3-5 fundamental root causes of issues",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "affected_dimensions"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique root cause ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "Root cause title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed explanation"
+          },
+          "affected_dimensions": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Dimensions impacted by this root cause"
+          },
+          "supporting_evidence": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Evidence supporting this root cause"
+          },
+          "business_implications": {
+            "type": "string",
+            "description": "Impact on business outcomes"
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "object",
+      "description": "Complete set of recommendations organized by priority",
+      "properties": {
+        "quick_wins": {
+          "type": "array",
+          "description": "High impact, low effort recommendations",
+          "items": {"$ref": "#/properties/executive_summary/properties/top_recommendations/items"}
+        },
+        "strategic_initiatives": {
+          "type": "array",
+          "description": "High impact, high effort recommendations",
+          "items": {"$ref": "#/properties/executive_summary/properties/top_recommendations/items"}
+        },
+        "minor_fixes": {
+          "type": "array",
+          "description": "Low impact, low effort recommendations",
+          "items": {"$ref": "#/properties/executive_summary/properties/top_recommendations/items"}
+        },
+        "deprioritized": {
+          "type": "array",
+          "description": "Low impact, high effort (avoid)",
+          "items": {"$ref": "#/properties/executive_summary/properties/top_recommendations/items"}
+        }
+      }
+    },
+    "implementation_roadmap": {
+      "type": "object",
+      "description": "Phased implementation plan",
+      "properties": {
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "duration", "goal"],
+            "properties": {
+              "name": {"type": "string"},
+              "duration": {"type": "string"},
+              "goal": {"type": "string"},
+              "key_initiatives": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

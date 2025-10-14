@@ -39,23 +39,24 @@ app.add_middleware(
 jobs = {}  # DeepStack jobs
 analysis_jobs = {}  # MEARA full analysis jobs
 
-# Progress stage mapping: 15 workflow steps → 5 user-facing stages
+# Progress stage mapping: 16 workflow steps → 5 user-facing stages
 STAGE_MAPPING = {
     1: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
     2: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
-    3: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
-    4: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
+    3: {"stage": 1, "name": "Processing technical data", "icon": "📋"},  # NEW: Ground Truth step
+    4: {"stage": 1, "name": "Preparing analysis", "icon": "🔬"},
     5: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
     6: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
-    7: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
+    7: {"stage": 2, "name": "Collecting evidence", "icon": "📊"},
     8: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
     9: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
     10: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
-    11: {"stage": 4, "name": "Building recommendations", "icon": "💡"},
+    11: {"stage": 3, "name": "Evaluating dimensions", "icon": "📈"},
     12: {"stage": 4, "name": "Building recommendations", "icon": "💡"},
-    13: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
+    13: {"stage": 4, "name": "Building recommendations", "icon": "💡"},
     14: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
     15: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
+    16: {"stage": 5, "name": "Finalizing report", "icon": "📝"},
 }
 
 class AnalysisRequest(BaseModel):
@@ -362,7 +363,7 @@ async def start_full_analysis(
     return {
         "analysis_job_id": analysis_job_id,
         "status": "queued",
-        "estimated_time_minutes": 8,
+        "estimated_time_minutes": 10,  # Updated from 8 to 10 (adds ~2 min for Ground Truth)
         "deepstack_job_id": deepstack_job_id
     }
 
@@ -389,27 +390,30 @@ async def run_meara_full_analysis(
         # Create progress callback to update status
         def update_progress(step_num: int):
             """Update progress based on workflow step"""
-            stage_info = STAGE_MAPPING.get(step_num, STAGE_MAPPING[15])
+            stage_info = STAGE_MAPPING.get(step_num, STAGE_MAPPING[16])
             analysis_jobs[analysis_job_id]["current_step"] = step_num
             analysis_jobs[analysis_job_id]["current_stage"] = stage_info["stage"]
             analysis_jobs[analysis_job_id]["stage_name"] = stage_info["name"]
             analysis_jobs[analysis_job_id]["stage_icon"] = stage_info["icon"]
-            analysis_jobs[analysis_job_id]["progress"] = int((step_num / 15) * 100)
+            analysis_jobs[analysis_job_id]["progress"] = int((step_num / 16) * 100)
 
         # Run workflow
         state, report_file = run_meara_workflow(
             company_name=company_name,
             company_url=company_url,
-            deep_research_brief=drb_content
+            deep_research_brief=drb_content,
+            deepstack_job_id=deepstack_job_id
         )
 
         # Mark as completed
         analysis_jobs[analysis_job_id]["status"] = "completed"
-        analysis_jobs[analysis_job_id]["current_step"] = 15
+        analysis_jobs[analysis_job_id]["current_step"] = 16
         analysis_jobs[analysis_job_id]["current_stage"] = 5
         analysis_jobs[analysis_job_id]["progress"] = 100
         analysis_jobs[analysis_job_id]["report_file"] = str(report_file)
         analysis_jobs[analysis_job_id]["final_report"] = state.final_report
+        # Store workflow state for dashboard endpoint
+        analysis_jobs[analysis_job_id]["workflow_state"] = state.to_dict()
 
     except Exception as e:
         analysis_jobs[analysis_job_id]["status"] = "failed"
@@ -460,6 +464,81 @@ async def get_analysis_report(analysis_job_id: str):
         "report_markdown": job.get("final_report", ""),
         "report_file": job.get("report_file")
     }
+
+@app.get("/api/analysis/dashboard/{analysis_job_id}")
+async def get_analysis_dashboard(analysis_job_id: str):
+    """
+    Get structured dashboard data for interactive visualization
+
+    Returns JSON structured for the interactive dashboard:
+    - Executive summary with top 3-5 recommendations
+    - Critical issues requiring immediate attention
+    - 9 dimension scores and analysis
+    - Root causes and implementation roadmap
+
+    This endpoint transforms the workflow state into dashboard-compatible JSON
+    matching the dashboard_schema.json contract.
+    """
+    if analysis_job_id not in analysis_jobs:
+        raise HTTPException(status_code=404, detail="Analysis job not found")
+
+    job = analysis_jobs[analysis_job_id]
+
+    if job["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"Analysis not complete. Status: {job['status']}"
+        )
+
+    # Get workflow state from in-memory storage (preferred)
+    workflow_state = job.get("workflow_state")
+
+    # Fallback: Load from file if not in memory
+    if not workflow_state:
+        report_file_path = job.get("report_file")
+        if not report_file_path:
+            raise HTTPException(
+                status_code=500,
+                detail="Analysis state not found"
+            )
+
+        # Find corresponding state file
+        report_path = Path(report_file_path)
+        state_file = report_path.parent / report_path.name.replace("_report.md", "_state.json")
+
+        if not state_file.exists():
+            raise HTTPException(
+                status_code=500,
+                detail="Analysis state file not found"
+            )
+
+        # Load workflow state from file
+        with open(state_file) as f:
+            workflow_state = json.load(f)
+
+    # Transform to dashboard format using the transformer library
+    from dashboard_transformer import transform_workflow_state_to_dashboard, validate_dashboard_data
+    from datetime import datetime
+
+    try:
+        dashboard_data = transform_workflow_state_to_dashboard(
+            company_name=job["company_name"],
+            company_url=job["company_url"],
+            analysis_date=datetime.now().isoformat()[:10],
+            analysis_job_id=analysis_job_id,
+            workflow_state_dict=workflow_state
+        )
+
+        # Validate before returning
+        validate_dashboard_data(dashboard_data)
+
+        return dashboard_data
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate dashboard data: {str(e)}"
+        )
 
 def extract_domain(url: str) -> str:
     """Extract domain from URL for filename"""
