@@ -209,17 +209,32 @@ export default function ResultsPage() {
             </p>
           </div>
 
-          {/* Export Controls */}
+          {/* View Toggle & Export Controls */}
           <div className="mb-8 p-6 rounded-lg border-2" style={{
             borderColor: '#0d71a9',
             backgroundColor: '#e2eef5'
           }}>
-            <h3 className="text-xl font-bold mb-4" style={{
-              fontFamily: 'var(--font-work-sans)',
-              color: '#0d71a9'
-            }}>
-              Export Options
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold" style={{
+                fontFamily: 'var(--font-work-sans)',
+                color: '#0d71a9'
+              }}>
+                Export Options
+              </h3>
+
+              {/* Dashboard View Toggle */}
+              <button
+                onClick={() => router.push(`/results/${analysisId}/dashboard`)}
+                className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2"
+                style={{
+                  fontFamily: 'var(--font-outfit)',
+                  backgroundColor: '#224f41',
+                  color: '#ffffff'
+                }}
+              >
+                📊 View Interactive Dashboard
+              </button>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Markdown Export */}
