@@ -114,7 +114,25 @@ export default function GtmDashboardPage() {
         }
 
         const dashboardData = await response.json()
-        setData(dashboardData)
+
+        // Extract executiveThesis section and merge with top-level company info
+        const transformedData = {
+          companyName: dashboardData.companyName,
+          ...dashboardData.executiveThesis
+        }
+
+        // Transform ACV expansion steps format (API uses "type" field, components expect "isDecrease")
+        if (transformedData.strategicOpportunity?.acvExpansion?.steps) {
+          transformedData.strategicOpportunity.acvExpansion.steps =
+            transformedData.strategicOpportunity.acvExpansion.steps.map((step: any) => ({
+              label: step.label,
+              value: step.value,
+              justification: step.justification,
+              isDecrease: step.type === 'decrease'
+            }))
+        }
+
+        setData(transformedData)
       } catch (err) {
         console.error('Error fetching GTM dashboard data:', err)
         setError(err instanceof Error ? err.message : 'Unknown error occurred')
@@ -294,18 +312,22 @@ export default function GtmDashboardPage() {
       </main>
 
       {/* Modals */}
-      <RadarChartModal
-        isOpen={radarModalOpen}
-        onClose={() => setRadarModalOpen(false)}
-        gtmBreakdown={data.gtmBreakdown}
-        companyName={data.companyName}
-      />
-      <AcvWaterfallModal
-        isOpen={waterfallModalOpen}
-        onClose={() => setWaterfallModalOpen(false)}
-        acvExpansion={data.strategicOpportunity.acvExpansion}
-        companyName={data.companyName}
-      />
+      {data.gtmBreakdown && (
+        <RadarChartModal
+          isOpen={radarModalOpen}
+          onClose={() => setRadarModalOpen(false)}
+          gtmBreakdown={data.gtmBreakdown}
+          companyName={data.companyName}
+        />
+      )}
+      {data.strategicOpportunity?.acvExpansion && (
+        <AcvWaterfallModal
+          isOpen={waterfallModalOpen}
+          onClose={() => setWaterfallModalOpen(false)}
+          acvExpansion={data.strategicOpportunity.acvExpansion}
+          companyName={data.companyName}
+        />
+      )}
     </div>
   )
 }
