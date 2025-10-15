@@ -163,12 +163,22 @@ async def run_deepstack_analysis(job_id: str, company_name: str, url: str):
 
         jobs[job_id]["progress"] = 30
 
+        print(f"[DeepStack] Starting analysis for {url}")
+        print(f"[DeepStack] Python: {sys.executable}")
+        print(f"[DeepStack] Script: {deepstack_script}")
+
         result = subprocess.run(
             [sys.executable, str(deepstack_script), "-u", url],
             capture_output=True,
             text=True,
             timeout=300  # 5 minute timeout
         )
+
+        print(f"[DeepStack] Return code: {result.returncode}")
+        if result.stdout:
+            print(f"[DeepStack] STDOUT: {result.stdout[:500]}")  # First 500 chars
+        if result.stderr:
+            print(f"[DeepStack] STDERR: {result.stderr[:500]}")  # First 500 chars
 
         jobs[job_id]["progress"] = 90
 
