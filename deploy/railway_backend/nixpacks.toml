@@ -4,9 +4,9 @@ aptPkgs = ["libglib2.0-0", "libnss3", "libnspr4", "libatk1.0-0", "libatk-bridge2
 
 [phases.install]
 cmds = [
-  "pip install -r requirements.txt",
-  "pip install playwright",
-  "playwright install firefox"
+  "python -m pip install -r requirements.txt",
+  "python -m pip install playwright",
+  "python -m playwright install firefox"
 ]
 
 [start]
