@@ -179,13 +179,13 @@ export default function Home() {
             fontFamily: 'var(--font-work-sans)',
             color: '#224f41'
           }}>
-            Marketing Effectiveness Analysis Reporting Agent (MEARA)
+            GTM Scalability Analysis
           </h1>
           <p className="text-lg" style={{
             fontFamily: 'var(--font-outfit)',
             color: '#528577'
           }}>
-            AI-powered GTM scalability analysis for Scale Venture Partners portfolio companies
+            Provided by the Scale VP GTM Platform Team
           </p>
         </div>
 
