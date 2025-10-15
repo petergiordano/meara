@@ -25,12 +25,7 @@ app = FastAPI(
 # Allow Vercel frontend to call this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://meara-app.vercel.app",  # Production Vercel URL
-        "http://localhost:3000",         # Local development (default)
-        "http://localhost:3002",         # Local development (alternate port)
-        "http://localhost:5173",         # Vite dev server
-    ],
+    allow_origins=["*"],  # Allow all origins (Vercel generates unique URLs per deployment)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
