@@ -17,7 +17,7 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 BRIEFING_EXTRACTION_PROMPT = """
-You are a GTM scalability expert. Analyze this MEARA GTM Scalability Analysis report and extract a GTM Scalability Briefing in the following JSON format:
+You are a marketing analysis expert. Analyze this MEARA marketing effectiveness report and extract a GTM Scalability Briefing in the following JSON format:
 
 {
   "companyName": "Company name from the report",
@@ -100,8 +100,8 @@ INSTRUCTIONS:
 
 3. For coreNarrative: Use the Executive Summary and Consolidated Diligence Finding sections
 4. For foundation: Extract strengths from the dimensional analysis (look for "Exceptional" or "Competent" ratings)
-5. For bottlenecks: Extract from Critical Issues Summary or Scalability Bottleneck Analysis
-6. For pillars: Use the "Pillar 1", "Pillar 2", etc. sections from the executive summary, or the main strategic growth levers
+5. For bottlenecks: Extract from Critical Issues Summary or Root Cause Analysis
+6. For pillars: Use the "Pillar 1", "Pillar 2", etc. sections from the executive summary, or the main strategic recommendations
 7. For roadmap: Extract from the Phased Implementation Plan section - convert the phases into the 3-phase structure
 
 IMPORTANT: Return ONLY valid JSON, no additional text or explanation.

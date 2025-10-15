@@ -185,7 +185,7 @@ export default function Home() {
             fontFamily: 'var(--font-outfit)',
             color: '#528577'
           }}>
-            AI-powered marketing effectiveness analysis for Scale Venture Partners portfolio companies
+            AI-powered GTM scalability analysis for Scale Venture Partners portfolio companies
           </p>
         </div>
 
@@ -494,9 +494,9 @@ export default function Home() {
                       <p className="font-semibold mb-1">Complete MEARA Analysis</p>
                       <ul className="text-xs space-y-1 list-disc list-inside">
                         <li>9 strategic dimensions evaluated</li>
-                        <li>Marketing effectiveness insights</li>
+                        <li>GTM scalability insights</li>
                         <li>Competitive positioning analysis</li>
-                        <li>Actionable recommendations</li>
+                        <li>Strategic growth levers</li>
                       </ul>
                     </div>
                   </div>
@@ -518,7 +518,7 @@ export default function Home() {
                     }}>
                       {drbFile ? (
                         <>
-                          <p>Using your uploaded Deep Research Brief to generate comprehensive marketing effectiveness analysis</p>
+                          <p>Using your uploaded Deep Research Brief to generate comprehensive GTM scalability analysis</p>
                         </>
                       ) : (
                         <>
@@ -593,7 +593,7 @@ export default function Home() {
                   fontFamily: 'var(--font-outfit)',
                   color: '#528577'
                 }}>
-                  Your comprehensive MEARA marketing effectiveness report is ready. Download it in your preferred format below.
+                  Your comprehensive MEARA GTM Scalability Analysis report is ready. Download it in your preferred format below.
                 </p>
 
                 {/* Download Buttons */}

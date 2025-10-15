@@ -50,3 +50,4 @@ logs/
 # Playwright
 .playwright/
 playwright/.ms-playwright/
+node_modules/

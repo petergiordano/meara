@@ -1,0 +1,10 @@
+# MANUAL VECTOR STORE CREATION NEEDED
+# Go to OpenAI dashboard and create vector store with these files:
+
+# GTM_Scalability_System_Instructions.md: file-VoFM7EVcmQH5kwua1hRJe3
+# Instruct_Executive_Summary.md: file-JhEVh9Jo44JHYjxex7zsoY
+# Instruct_Marketing_Analysis.md: file-4M5U3L7yPJaJQxbcDMMysz
+# Marketing_Analysis_Methodology.md: file-1DSgsW3oW4sVaY98pV5XkQ
+# Marketing_Analysis_Rubrics.md: file-PLRCLUWrpKspE6Zf9C2Tit
+# Strategic_Elements_Framework.md: file-7MbAs9fa2K98qNVeGoEoSt
+# Prompt_for_DeepR_B2B_SaaS_Marketing_Insights.md: file-2St6NFoHPTxkqRphPAbiRM

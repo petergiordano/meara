@@ -47,7 +47,7 @@ class WorkflowState:
         self.evidence_collection = None
         self.dimension_evaluations = None
         self.strategic_verification = None
-        self.root_causes = None
+        self.scalability_bottlenecks = None
         self.recommendations = None
         self.final_report = None
 
@@ -64,7 +64,7 @@ class WorkflowState:
             "evidence_collection": self.evidence_collection,
             "dimension_evaluations": self.dimension_evaluations,
             "strategic_verification": self.strategic_verification,
-            "root_causes": self.root_causes,
+            "scalability_bottlenecks": self.scalability_bottlenecks,
             "recommendations": self.recommendations,
             "final_report": self.final_report
         }
@@ -222,7 +222,7 @@ def step_05_dimension_evaluator(state):
 
     start = time.time()
 
-    prompt = f"""Evaluate marketing effectiveness across 9 dimensions:
+    prompt = f"""Evaluate GTM scalability across 9 dimensions:
 
 Company: {state.company_name}
 
@@ -280,14 +280,14 @@ def step_08_strategic_priority_check(state):
 
     return has_high_priority
 
-def step_09_rootcause_analyst(state, high_priority_flag):
-    """Node 9: AGENT - Root Cause Analyst"""
-    print("\n[9/15] 🔍 Root Cause Analyst - Identifying 3-5 root causes")
-    print(f"  Agent: MEARA Root Cause Analyst ({ASSISTANTS['rootcause_analyst']})")
+def step_09_bottleneck_analyst(state, high_priority_flag):
+    """Node 9: AGENT - Scalability Bottleneck Analyst"""
+    print("\n[9/15] 🔍 Scalability Bottleneck Analyst - Identifying 3-5 scalability bottlenecks")
+    print(f"  Agent: MEARA Scalability Bottleneck Analyst ({ASSISTANTS['rootcause_analyst']})")
 
     start = time.time()
 
-    prompt = f"""Identify root causes of marketing effectiveness issues:
+    prompt = f"""Identify scalability bottlenecks in GTM execution:
 
 Company: {state.company_name}
 
@@ -302,13 +302,13 @@ Deep Research Brief:
 
 High Priority Strategic Elements Flag: {high_priority_flag}
 
-Identify 3-5 fundamental root causes and return as JSON."""
+Identify 3-5 fundamental scalability bottlenecks and return as JSON."""
 
     response, _ = call_assistant(ASSISTANTS["rootcause_analyst"], prompt)
-    state.root_causes = parse_json_response(response)
+    state.scalability_bottlenecks = parse_json_response(response)
 
-    state.step_timings["rootcause_analyst"] = time.time() - start
-    print(f"  ✓ Completed in {state.step_timings['rootcause_analyst']:.1f}s")
+    state.step_timings["bottleneck_analyst"] = time.time() - start
+    print(f"  ✓ Completed in {state.step_timings['bottleneck_analyst']:.1f}s")
 
 def step_10_recommendation_builder(state):
     """Node 10: AGENT - Recommendation Builder"""
@@ -317,17 +317,17 @@ def step_10_recommendation_builder(state):
 
     start = time.time()
 
-    prompt = f"""Develop strategic recommendations:
+    prompt = f"""Develop strategic growth levers:
 
 Company: {state.company_name}
 
-Root Causes:
-{json.dumps(state.root_causes, indent=2)}
+Scalability Bottlenecks:
+{json.dumps(state.scalability_bottlenecks, indent=2)}
 
 Strategic Verification:
 {json.dumps(state.strategic_verification, indent=2)}
 
-Create 5-7 strategic recommendations with priority matrix. Return as JSON."""
+Create 5-7 strategic growth levers with priority matrix. Return as JSON."""
 
     response, _ = call_assistant(ASSISTANTS["recommendation_builder"], prompt)
     state.recommendations = parse_json_response(response)
@@ -342,7 +342,7 @@ def step_11_report_assembler(state):
 
     start = time.time()
 
-    prompt = f"""Assemble the complete Marketing Effectiveness Analysis report:
+    prompt = f"""Assemble the complete GTM Scalability Analysis report:
 
 Company: {state.company_name}
 URL: {state.company_url}
@@ -357,8 +357,8 @@ Dimension Evaluations:
 Strategic Verification:
 {json.dumps(state.strategic_verification, indent=2)}
 
-Root Causes:
-{json.dumps(state.root_causes, indent=2)}
+Scalability Bottlenecks:
+{json.dumps(state.scalability_bottlenecks, indent=2)}
 
 Recommendations:
 {json.dumps(state.recommendations, indent=2)}
@@ -476,7 +476,7 @@ def run_meara_workflow(company_name, company_url, deep_research_brief=None):
     """Execute the complete MEARA workflow"""
 
     print("=" * 60)
-    print("MEARA Marketing Effectiveness Analysis")
+    print("MEARA GTM Scalability Analysis")
     print("=" * 60)
 
     # Initialize state
@@ -497,7 +497,7 @@ def run_meara_workflow(company_name, company_url, deep_research_brief=None):
 
     high_priority = step_08_strategic_priority_check(state)
 
-    step_09_rootcause_analyst(state, high_priority)
+    step_09_bottleneck_analyst(state, high_priority)
     step_10_recommendation_builder(state)
     step_11_report_assembler(state)
     step_12_table_generator(state)
