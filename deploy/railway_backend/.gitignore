@@ -29,8 +29,8 @@ deepstack_output*.json
 *_results.json
 
 # DeepStack files (copied during setup)
-# NOTE: deepstack.py is now committed to repo for Railway deployment
-src/
+# NOTE: deepstack.py and src/ are now committed to repo for Railway deployment
+# src/ directory is needed for deepstack_collector module
 
 # IDE
 .vscode/
