@@ -816,11 +816,6 @@ async def get_gtm_briefing(company_id: str):
                 }
             ]
         }
-    else:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Company briefing not found: {company_id}. Try 'test-ggwp' for demo data."
-        )
 
 def extract_domain(url: str) -> str:
     """Extract domain from URL for filename"""
