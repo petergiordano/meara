@@ -97,10 +97,24 @@ export default function GtmScalabilityBriefingPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-700 border-t-amber-500 mb-4"></div>
-          <div className="text-lg text-gray-400">Loading GTM Scalability Briefing...</div>
+          <div
+            className="inline-block animate-spin rounded-full h-12 w-12 border-4 mb-4"
+            style={{
+              borderColor: '#e5ecea',
+              borderTopColor: '#224f41'
+            }}
+          ></div>
+          <div
+            className="text-lg"
+            style={{
+              fontFamily: 'var(--font-outfit)',
+              color: '#528577'
+            }}
+          >
+            Loading GTM Scalability Briefing...
+          </div>
         </div>
       </div>
     )
@@ -109,11 +123,18 @@ export default function GtmScalabilityBriefingPage() {
   // Error state
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="max-w-md mx-auto p-6 bg-gray-800 rounded-lg shadow-lg border border-red-400">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div
+          className="max-w-md mx-auto p-6 rounded-lg shadow-lg border-2"
+          style={{
+            backgroundColor: '#ffffff',
+            borderColor: '#0d71a9'
+          }}
+        >
           <div className="flex items-start gap-3">
             <svg
-              className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5"
+              className="w-6 h-6 flex-shrink-0 mt-0.5"
+              style={{ color: '#0d71a9' }}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -124,15 +145,32 @@ export default function GtmScalabilityBriefingPage() {
               <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <div>
-              <h3 className="text-lg font-semibold text-red-100 mb-2">
+              <h3
+                className="text-lg font-semibold mb-2"
+                style={{
+                  fontFamily: 'var(--font-work-sans)',
+                  color: '#224f41'
+                }}
+              >
                 Error Loading Briefing
               </h3>
-              <p className="text-sm text-red-200">
+              <p
+                className="text-sm"
+                style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}
+              >
                 {error || 'Failed to load GTM scalability briefing. Please try again.'}
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                className="mt-4 px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                style={{
+                  backgroundColor: '#224f41',
+                  color: '#ffffff',
+                  fontFamily: 'var(--font-outfit)'
+                }}
               >
                 Retry
               </button>
@@ -144,7 +182,7 @@ export default function GtmScalabilityBriefingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <Header

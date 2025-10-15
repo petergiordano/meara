@@ -17,30 +17,58 @@ interface NarrativePillarsProps {
  * Features:
  * - Expandable cards using <details> and <summary>
  * - Arrow icon that rotates 90deg when expanded
- * - Summary text turns blue-400 when open
+ * - Summary text turns blue when open
  * - Content has left border accent
- * - Card hover effect
+ * - White cards with green borders
  *
- * Design: Dark theme with interactive expand/collapse
+ * Design: Scale VP brand - white background with green accents
  * Article VIII Compliance: Uses native <details> element directly, no JS state
  */
 export function NarrativePillars({ pillars }: NarrativePillarsProps) {
   return (
     <section className="mb-12">
-      <h2 className="text-2xl font-bold text-white mb-6">The Path to Scale: Strategic Pillars</h2>
+      <h2
+        className="text-2xl font-bold mb-6"
+        style={{
+          fontFamily: 'var(--font-work-sans)',
+          color: '#224f41'
+        }}
+      >
+        The Path to Scale: Strategic Pillars
+      </h2>
       <div className="space-y-4">
         {pillars.map((pillar, index) => (
           <details
             key={index}
-            className="card p-6 bg-gray-800 border border-gray-700 rounded-xl cursor-pointer transition-all duration-300 hover:border-[#4f5b70] group"
+            className="p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 group"
+            style={{
+              backgroundColor: '#ffffff',
+              borderColor: '#7da399'
+            }}
           >
-            <summary className="font-semibold text-lg flex justify-between items-center text-white list-none group-open:text-blue-400">
+            <summary
+              className="font-semibold text-lg flex justify-between items-center list-none"
+              style={{
+                fontFamily: 'var(--font-work-sans)',
+                color: '#224f41'
+              }}
+            >
               <span>Pillar {index + 1}: {pillar.title}</span>
-              <span className="arrow text-blue-400 font-bold text-2xl transform transition-transform duration-200 group-open:rotate-90">
+              <span
+                className="arrow font-bold text-2xl transform transition-transform duration-200 group-open:rotate-90"
+                style={{ color: '#0d71a9' }}
+              >
                 &gt;
               </span>
             </summary>
-            <div className="mt-4 text-gray-400 space-y-2 pl-2 border-l-2 border-gray-600">
+            <div
+              className="mt-4 space-y-2 pl-2 border-l-2"
+              style={{
+                borderColor: '#7da399',
+                fontFamily: 'var(--font-outfit)',
+                color: '#060119'
+              }}
+            >
               {pillar.points.map((point, pointIndex) => (
                 <p key={pointIndex}>{point}</p>
               ))}
