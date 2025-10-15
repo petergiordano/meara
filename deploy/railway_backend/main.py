@@ -299,7 +299,7 @@ async def debug_job(job_id: str):
 async def start_full_analysis(
     background_tasks: BackgroundTasks,
     deepstack_job_id: str = Form(...),
-    additional_context_files: Optional[List[UploadFile]] = File(None)
+    additional_context_files: List[UploadFile] = File(default=[])
 ):
     """
     Start full MEARA analysis using completed DeepStack results
