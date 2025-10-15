@@ -2,9 +2,9 @@
 set -e
 
 echo "===== Installing Python dependencies ====="
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 echo "===== Installing Playwright Firefox browser ====="
-playwright install --with-deps firefox
+python3 -m playwright install --with-deps firefox
 
 echo "===== Build complete ====="
