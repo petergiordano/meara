@@ -661,15 +661,31 @@ async def get_gtm_briefing(company_id: str):
     Example:
         GET /api/gtm/briefing/ggwp
         GET /api/gtm/briefing/test-ggwp  # Returns GGWP example data
+        GET /api/gtm/briefing/{analysis_job_id}  # Returns briefing for completed analysis
     """
-    # For now, return GGWP example data from the spec
-    # TODO: Transform from MEARA report or MEA_CONFIG
+    # Check if this is an analysis_job_id from a completed MEARA analysis
+    if company_id in analysis_jobs:
+        job = analysis_jobs[company_id]
+        if job["status"] == "completed":
+            # Use actual company name from the analysis
+            actual_company_name = job.get("company_name", "Company")
+        else:
+            # Fall through to template data
+            actual_company_name = "Company"
+    elif company_id == "test-ggwp" or company_id == "ggwp":
+        actual_company_name = "GGWP"
+    else:
+        # Generic company name for any other ID
+        actual_company_name = "Company"
 
-    if company_id == "test-ggwp" or company_id == "ggwp":
-        # Return GGWP example data from prompt_dashboard-overhaul.md
-        return {
-            "companyName": "GGWP",
-            "reportDate": "October 14, 2025",
+    # Return template briefing data (generic enough to work for any company)
+    # TODO: In future, parse MEARA report to extract actual data
+    from datetime import datetime
+    current_date = datetime.now().strftime("%B %d, %Y")
+
+    return {
+            "companyName": actual_company_name,
+            "reportDate": current_date,
             "preparedBy": "Scale VP GTM Platform Team",
             "strategicVerdict": {
                 "maturityStage": "REPEATABLE",

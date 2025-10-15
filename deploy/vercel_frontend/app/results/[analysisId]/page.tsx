@@ -236,7 +236,7 @@ export default function ResultsPage() {
                   📊 View Interactive Dashboard
                 </button>
                 <button
-                  onClick={() => router.push(`/briefing/test-ggwp`)}
+                  onClick={() => router.push(`/briefing/${analysisId}`)}
                   className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2"
                   style={{
                     fontFamily: 'var(--font-outfit)',
