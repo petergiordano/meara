@@ -635,6 +635,182 @@ async def get_analysis_dashboard(analysis_job_id: str):
             detail=f"Failed to generate dashboard data: {str(e)}"
         )
 
+# ============================================================================
+# GTM SCALABILITY BRIEFING ENDPOINTS (Dashboard Overhaul)
+# ============================================================================
+
+@app.get("/api/gtm/briefing/{company_id}")
+async def get_gtm_briefing(company_id: str):
+    """
+    Get GTM Scalability Briefing data for narrative report view
+
+    Returns JSON matching the gtm_scalability_briefing_v2.html prototype schema.
+    This is a narrative-focused view with:
+    - GTM Maturity Model (AD-HOC → REPEATABLE → SCALABLE → OPTIMIZED)
+    - Core Narrative
+    - Foundation vs Bottlenecks
+    - Strategic Pillars (expandable)
+    - Execution Roadmap (3 phases)
+
+    Args:
+        company_id: Company identifier or analysis_job_id
+
+    Returns:
+        Briefing data matching GtmScalabilityBriefingData schema
+
+    Example:
+        GET /api/gtm/briefing/ggwp
+        GET /api/gtm/briefing/test-ggwp  # Returns GGWP example data
+    """
+    # For now, return GGWP example data from the spec
+    # TODO: Transform from MEARA report or MEA_CONFIG
+
+    if company_id == "test-ggwp" or company_id == "ggwp":
+        # Return GGWP example data from prompt_dashboard-overhaul.md
+        return {
+            "companyName": "GGWP",
+            "reportDate": "October 14, 2025",
+            "preparedBy": "Scale VP GTM Platform Team",
+            "strategicVerdict": {
+                "maturityStage": "REPEATABLE",
+                "maturityDescriptor": "Success is driven by heroic, founder-led efforts but lacks the systems for predictable, scalable growth.",
+                "coreNarrative": [
+                    "GGWP has achieved impressive early traction by leveraging two world-class, but fundamentally unscalable, assets: a technically excellent product that solves an acute pain point and the unparalleled industry credibility of its founding team. This is the story of a company that has perfected the art of building a great product and leveraging a powerful network to land foundational accounts.",
+                    "However, the very strengths that have propelled GGWP to this point are now its primary bottlenecks to scalable growth. The company's go-to-market (GTM) engine is a pristine, impeccably crafted \"digital Savile Row suit with no pockets\"—a perfect exterior with no infrastructure to capture, measure, or optimize a sales funnel. The next phase of growth requires a deliberate architectural shift to a predictable, data-driven, and scalable revenue engine."
+                ]
+            },
+            "coreAnalysis": {
+                "foundation": [
+                    {
+                        "title": "Technically Excellent Product",
+                        "description": "Solves an acute, validated pain point with a best-in-class solution that customers love."
+                    },
+                    {
+                        "title": "The \"Thresh Moat\"",
+                        "description": "Unparalleled founder credibility (CEO Dennis Fong) that has secured marquee logos like Meta, Netflix, and Krafton."
+                    },
+                    {
+                        "title": "Proven Market Fit",
+                        "description": "Achieved an estimated $6M+ ARR with remarkable capital efficiency, proving strong demand."
+                    }
+                ],
+                "bottlenecks": [
+                    {
+                        "title": "Un-instrumented GTM Engine",
+                        "description": "Critically constrains lead generation and prevents the creation of a predictable sales funnel."
+                    },
+                    {
+                        "title": "Single, High-Friction Conversion Path",
+                        "description": "Alienates the majority of prospects who are not yet ready for a sales conversation, limiting pipeline."
+                    },
+                    {
+                        "title": "Positioned as a Cost Center",
+                        "description": "The \"moderation\" narrative limits deal size and confines sales to under-resourced Trust & Safety budgets."
+                    }
+                ]
+            },
+            "pillars": [
+                {
+                    "title": "The \"Thresh Moat\" is a powerful but unscalable foundation",
+                    "points": [
+                        "GGWP's early success is a direct result of founder-led sales, leveraging CEO Dennis \"Thresh\" Fong's legendary status and deep industry network to bypass traditional GTM friction.",
+                        "This reliance on a founder's network is the definition of an unscalable growth model. The critical challenge is to transfer the trust embodied in the founder's personal brand to the GGWP corporate brand through scalable channels."
+                    ]
+                },
+                {
+                    "title": "The website is a digital brochure, not a conversion engine",
+                    "points": [
+                        "The company's website demonstrates best-in-class on-page SEO and design but completely lacks the foundational tools of a modern marketing engine for measurement and optimization.",
+                        "The buyer's journey is a dead end. The only conversion path is a high-friction \"Talk to an Expert\" CTA, with no low-friction options like newsletters or content downloads. This is a critical architectural flaw that throttles lead generation."
+                    ]
+                },
+                {
+                    "title": "The category must be redefined from cost center to revenue driver",
+                    "points": [
+                        "GGWP's most powerful strategic lever is to redefine its category from \"Trust & Safety\" to \"Community Intelligence.\" Selling moderation is a cost-center sale; selling insights that reduce churn and improve product is a high-ROI, revenue-centric sale.",
+                        "The \"Pulse\" sentiment analysis product is the key to this pivot. It transforms player chat from a liability to be managed into an asset to be mined for business intelligence, increasing player retention and LTV."
+                    ]
+                },
+                {
+                    "title": "The path to a predictable revenue engine must be built",
+                    "points": [
+                        "The immediate priority is to instrument the entire digital funnel with a marketing automation stack, conversion goals, and multiple engagement paths.",
+                        "A dual-pronged GTM motion offers the clearest path to scale: a bottoms-up \"Land\" motion for the core product, and a top-down, high-ACV enterprise sale of the \"Pulse\" intelligence platform."
+                    ]
+                }
+            ],
+            "roadmap": [
+                {
+                    "phase": "Phase 1: Foundation (Weeks 1-6)",
+                    "color": "blue",
+                    "tasks": [
+                        {
+                            "icon": "⚡️",
+                            "title": "Instrument the Funnel",
+                            "description": "Deploy a tag manager, marketing automation platform, and conversion tracking pixels immediately."
+                        },
+                        {
+                            "icon": "⚡️",
+                            "title": "Launch Low-Friction Offer",
+                            "description": "Create a data-driven report on player churn and feature it on the homepage with a lead capture form."
+                        },
+                        {
+                            "icon": "⚡️",
+                            "title": "Reposition the Narrative",
+                            "description": "Revise the sales deck and discovery script to lead with the \"Community Intelligence\" value proposition."
+                        }
+                    ]
+                },
+                {
+                    "phase": "Phase 2: Funnel Construction (Weeks 7-12)",
+                    "color": "indigo",
+                    "tasks": [
+                        {
+                            "icon": "🏛️",
+                            "title": "Build Content for the Buyer's Journey",
+                            "description": "Develop webinars, guides, and ROI calculators for each stage of the funnel."
+                        },
+                        {
+                            "icon": "🏛️",
+                            "title": "Systematize the \"Thresh Moat\"",
+                            "description": "Launch a consistent founder-led content series to build a scalable brand asset."
+                        },
+                        {
+                            "icon": "🏛️",
+                            "title": "Launch Defensive Narrative",
+                            "description": "Publish content to counter the \"Gaming Safety Coalition\" and highlight the value of an integrated platform."
+                        }
+                    ]
+                },
+                {
+                    "phase": "Phase 3: Scale the Engine (Months 4-6+)",
+                    "color": "purple",
+                    "tasks": [
+                        {
+                            "icon": "🚀",
+                            "title": "Launch Category Creation Campaign",
+                            "description": "Execute a full campaign to establish and own \"Community Intelligence for Gaming.\""
+                        },
+                        {
+                            "icon": "🚀",
+                            "title": "Hire a Head of Marketing",
+                            "description": "Bring in a proven marketing leader to build and scale the GTM engine."
+                        },
+                        {
+                            "icon": "🚀",
+                            "title": "Optimize and Scale",
+                            "description": "Use data from the new funnel to A/B test landing pages and scale investment in proven channels."
+                        }
+                    ]
+                }
+            ]
+        }
+    else:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Company briefing not found: {company_id}. Try 'test-ggwp' for demo data."
+        )
+
 def extract_domain(url: str) -> str:
     """Extract domain from URL for filename"""
     from urllib.parse import urlparse

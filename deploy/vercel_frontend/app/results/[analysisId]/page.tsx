@@ -222,18 +222,31 @@ export default function ResultsPage() {
                 Export Options
               </h3>
 
-              {/* Dashboard View Toggle */}
-              <button
-                onClick={() => router.push(`/results/${analysisId}/dashboard`)}
-                className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2"
-                style={{
-                  fontFamily: 'var(--font-outfit)',
-                  backgroundColor: '#224f41',
-                  color: '#ffffff'
-                }}
-              >
-                📊 View Interactive Dashboard
-              </button>
+              {/* Dashboard View Toggles */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => router.push(`/results/${analysisId}/dashboard`)}
+                  className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    backgroundColor: '#224f41',
+                    color: '#ffffff'
+                  }}
+                >
+                  📊 View Interactive Dashboard
+                </button>
+                <button
+                  onClick={() => router.push(`/briefing/test-ggwp`)}
+                  className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90 flex items-center gap-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    backgroundColor: '#0d71a9',
+                    color: '#ffffff'
+                  }}
+                >
+                  📋 View Scalability Briefing
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
