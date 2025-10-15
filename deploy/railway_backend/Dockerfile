@@ -36,7 +36,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Install Playwright and Firefox
 RUN pip install --no-cache-dir playwright
-RUN playwright install firefox --with-deps
+RUN playwright install firefox
 
 # Copy application code
 COPY . .
