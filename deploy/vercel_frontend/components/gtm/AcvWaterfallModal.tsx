@@ -270,7 +270,7 @@ export function AcvWaterfallModal({
                   <LabelList
                     dataKey="displayValue"
                     position="top"
-                    formatter={(value: number) => `$${Math.abs(value).toLocaleString()}`}
+                    formatter={(value: any) => `$${Math.abs(Number(value)).toLocaleString()}`}
                     style={{ fill: '#343A40', fontSize: 12, fontWeight: 600 }}
                   />
                 </Bar>

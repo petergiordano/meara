@@ -459,7 +459,8 @@ export default function Home() {
                   <ContinueAnalysisButton
                     deepstackJobId={jobId || ''}
                     companyName={companyName}
-                    onAnalysisStart={handleFullAnalysisStart}
+                    companyUrl={companyUrl}
+                    onAnalysisStarted={handleFullAnalysisStart}
                   />
                   <div className="mt-4 text-center">
                     <p className="text-sm font-medium" style={{
