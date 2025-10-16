@@ -291,6 +291,67 @@ async def debug_job(job_id: str):
         raise HTTPException(status_code=404, detail="Job not found")
     return jobs[job_id]
 
+@app.post("/api/upload-deepstack")
+async def upload_deepstack_json(
+    deepstack_json_file: UploadFile = File(...),
+    company_name: Optional[str] = Form(None),
+    company_url: Optional[str] = Form(None)
+):
+    """
+    Upload a pre-existing DeepStack JSON file (for testing)
+
+    Accepts multipart/form-data with:
+    - deepstack_json_file: DeepStack JSON file
+    - company_name: Optional company name (extracted from JSON if not provided)
+    - company_url: Optional company URL (extracted from JSON if not provided)
+
+    Returns job_id that can be used with /api/analyze/full
+    """
+    try:
+        # Read and parse JSON file
+        content = await deepstack_json_file.read()
+        deepstack_data = json.loads(content)
+
+        # Extract company info from JSON if not provided
+        if not company_name:
+            company_name = deepstack_data.get("company_name", "Unknown Company")
+        if not company_url:
+            company_url = deepstack_data.get("url", deepstack_data.get("company_url", ""))
+
+        # Generate job ID
+        job_id = str(uuid.uuid4())
+
+        # Store in jobs dictionary as completed
+        jobs[job_id] = {
+            "status": "completed",
+            "company_name": company_name,
+            "company_url": company_url,
+            "progress": 100,
+            "result": deepstack_data,
+            "uploaded": True  # Flag to indicate this was uploaded, not scraped
+        }
+
+        print(f"[Upload] DeepStack JSON uploaded for {company_name}: {job_id}")
+
+        return {
+            "job_id": job_id,
+            "status": "completed",
+            "company_name": company_name,
+            "company_url": company_url,
+            "message": "DeepStack JSON uploaded successfully"
+        }
+
+    except json.JSONDecodeError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid JSON file: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to process upload: {str(e)}"
+        )
+
 # ============================================================================
 # MEARA FULL ANALYSIS ENDPOINTS (Sprint L.1)
 # ============================================================================

@@ -50,29 +50,33 @@ export default function Home() {
     try {
       // Option 1: Upload existing DeepStack JSON (skip analysis)
       if (deepstackJsonFile) {
-        console.log('[Page] Loading DeepStack JSON from file:', deepstackJsonFile.name);
+        console.log('[Page] Uploading DeepStack JSON file:', deepstackJsonFile.name);
 
-        const fileText = await deepstackJsonFile.text();
-        const jsonData = JSON.parse(fileText);
+        // Create FormData for JSON file upload
+        const formData = new FormData();
+        formData.append('deepstack_json_file', deepstackJsonFile);
+        formData.append('company_name', companyName || 'Unknown');
+        formData.append('company_url', companyUrl || 'Unknown');
 
-        // Generate a fake job_id for this uploaded result
-        const fakeJobId = `uploaded-${Date.now()}`;
-
-        // Store in jobs state with completed status
-        setJobId(fakeJobId);
-        setResult(jsonData);
-        setLoading(false);
-
-        // Create a completed status
-        setStatus({
-          job_id: fakeJobId,
-          status: 'completed',
-          company_name: companyName || 'Unknown',
-          company_url: companyUrl || 'Unknown',
-          progress: 100
+        // Upload to backend
+        const response = await fetch(`${RAILWAY_API}/api/upload-deepstack`, {
+          method: 'POST',
+          body: formData
         });
 
-        console.log('[Page] DeepStack JSON loaded successfully');
+        if (!response.ok) {
+          throw new Error(`Failed to upload JSON: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('[Page] DeepStack JSON uploaded successfully:', data);
+
+        // Use the job_id from backend
+        setJobId(data.job_id);
+
+        // Fetch the result from the backend
+        fetchResults(data.job_id);
+
         return;
       }
 
