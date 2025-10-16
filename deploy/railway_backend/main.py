@@ -466,7 +466,7 @@ async def run_meara_full_analysis(
 
         # Import and run orchestrator
         # We'll import here to avoid startup issues if OpenAI not configured
-        from meara_orchestrator import run_meara_workflow, STAGE_MAPPING as WORKFLOW_STAGES
+        from meara_orchestrator import run_meara_workflow
 
         # Create progress callback to update status
         def update_progress(step_num: int):
