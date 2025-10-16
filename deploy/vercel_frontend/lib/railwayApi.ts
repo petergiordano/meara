@@ -99,6 +99,11 @@ export async function startFullAnalysis(
   const formData = new FormData();
   formData.append('deepstack_job_id', request.deepstack_job_id);
 
+  // Add optional Deep Research Brief file
+  if (request.deep_research_brief_file) {
+    formData.append('deep_research_brief_file', request.deep_research_brief_file);
+  }
+
   // Add optional additional context files
   // FastAPI expects multiple files with the same field name
   if (request.additional_context_files) {

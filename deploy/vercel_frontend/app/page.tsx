@@ -26,7 +26,6 @@ export default function Home() {
   // State
   const [companyName, setCompanyName] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
-  const [drbFile, setDrbFile] = useState<File | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [result, setResult] = useState<DeepStackResult | null>(null);
@@ -48,13 +47,10 @@ export default function Home() {
     setError(null);
 
     try {
-      // Create FormData for file upload support
+      // Create FormData for API request
       const formData = new FormData();
       formData.append('company_name', companyName);
       formData.append('company_url', companyUrl);
-      if (drbFile) {
-        formData.append('drb_file', drbFile);
-      }
 
       // Start analysis
       const response = await fetch(`${RAILWAY_API}/api/analyze`, {
@@ -134,7 +130,6 @@ export default function Home() {
   const handleReset = () => {
     setCompanyName('');
     setCompanyUrl('');
-    setDrbFile(null);
     setJobId(null);
     setStatus(null);
     setResult(null);
@@ -240,39 +235,6 @@ export default function Home() {
                   value={companyUrl}
                   onChange={(e) => setCompanyUrl(e.target.value)}
                   required
-                  disabled={loading}
-                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    fontFamily: 'var(--font-outfit)',
-                    borderColor: '#7da399',
-                    color: '#060119',
-                    backgroundColor: loading ? '#f6f6f6' : '#ffffff'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="drbFile"
-                  className="block text-sm font-medium mb-2"
-                  style={{
-                    fontFamily: 'var(--font-outfit)',
-                    color: '#060119'
-                  }}
-                >
-                  Deep Research Brief
-                </label>
-                <p className="mb-3 text-sm" style={{
-                  fontFamily: 'var(--font-outfit)',
-                  color: '#528577'
-                }}>
-                  Required for full analysis. Upload your own or we'll generate one automatically.
-                </p>
-                <input
-                  id="drbFile"
-                  type="file"
-                  accept=".pdf,.txt,.md,.doc,.docx"
-                  onChange={(e) => setDrbFile(e.target.files?.[0] || null)}
                   disabled={loading}
                   className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
@@ -511,26 +473,18 @@ export default function Home() {
                       fontFamily: 'var(--font-work-sans)',
                       color: '#0d71a9'
                     }}>
-                      ⚙️ {drbFile ? 'Processing Steps:' : 'Behind the Scenes:'}
+                      ⚙️ Behind the Scenes:
                     </h4>
                     <div className="text-xs pl-5 space-y-1" style={{
                       fontFamily: 'var(--font-outfit)',
                       color: '#060119'
                     }}>
-                      {drbFile ? (
-                        <>
-                          <p>Using your uploaded Deep Research Brief to generate comprehensive GTM scalability analysis</p>
-                        </>
-                      ) : (
-                        <>
-                          <p className="mb-2">We'll automatically:</p>
-                          <ol className="list-decimal list-inside space-y-1">
-                            <li>Extract ground truth from website data</li>
-                            <li>Generate strategic research brief</li>
-                            <li>Produce comprehensive MEARA analysis</li>
-                          </ol>
-                        </>
-                      )}
+                      <p className="mb-2">We'll automatically:</p>
+                      <ol className="list-decimal list-inside space-y-1">
+                        <li>Extract ground truth from website data</li>
+                        <li>Generate strategic research brief (or use yours if provided)</li>
+                        <li>Produce comprehensive MEARA analysis</li>
+                      </ol>
                     </div>
                   </div>
                 </div>

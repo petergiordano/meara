@@ -32,7 +32,9 @@ export default function ContinueAnalysisButton({
 }: ContinueAnalysisButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [drbFile, setDrbFile] = useState<File | null>(null);
   const [contextFiles, setContextFiles] = useState<File[]>([]);
+  const drbFileInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +69,27 @@ export default function ContinueAnalysisButton({
     setContextFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleDrbFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError(`File too large: ${file.name}. Max 10MB.`);
+      return;
+    }
+
+    setDrbFile(file);
+    setError(null);
+  };
+
+  const handleRemoveDrbFile = () => {
+    setDrbFile(null);
+    if (drbFileInputRef.current) {
+      drbFileInputRef.current.value = '';
+    }
+  };
+
   const handleClick = async () => {
     // Don't proceed if disabled or already loading
     if (disabled || isLoading) {
@@ -81,6 +104,7 @@ export default function ContinueAnalysisButton({
         company_name: companyName,
         company_url: companyUrl,
         deepstack_job_id: deepstackJobId,
+        deep_research_brief_file: drbFile || undefined,
         additional_context_files: contextFiles.length > 0 ? contextFiles : undefined,
       });
 
@@ -97,6 +121,74 @@ export default function ContinueAnalysisButton({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
+      {/* Deep Research Brief Section */}
+      <div className="w-full p-6 bg-blue-50 border-2 border-blue-300 rounded-lg">
+        <h3 className="text-lg font-semibold mb-2 text-blue-900">
+          Deep Research Brief (Optional)
+        </h3>
+        <p className="text-sm text-blue-700 mb-4">
+          {drbFile
+            ? "✓ Using your Deep Research Brief (~8-10 min, $5-6)"
+            : "⚙️ Will auto-generate Deep Research Brief (~12-15 min, $7-8)"
+          }
+        </p>
+
+        {/* File Input */}
+        <input
+          ref={drbFileInputRef}
+          type="file"
+          accept=".pdf,.md,.txt,.docx"
+          onChange={handleDrbFileSelect}
+          disabled={disabled || isLoading}
+          className="hidden"
+          id="drb-file-input"
+        />
+
+        {/* File Display or Upload Button */}
+        {!drbFile ? (
+          <label
+            htmlFor="drb-file-input"
+            className={`
+              inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm
+              transition-all cursor-pointer
+              ${
+                disabled || isLoading
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-white border-2 border-blue-300 text-blue-700 hover:border-blue-400 hover:bg-blue-50'
+              }
+            `}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Upload Existing DRB (Save time & cost)
+          </label>
+        ) : (
+          <div className="flex items-center justify-between p-3 bg-white border-2 border-green-400 rounded-md">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700 truncate">{drbFile.name}</span>
+              <span className="text-xs text-gray-500 flex-shrink-0">
+                ({(drbFile.size / 1024).toFixed(1)} KB)
+              </span>
+            </div>
+            <button
+              onClick={handleRemoveDrbFile}
+              disabled={isLoading}
+              className="ml-2 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+            >
+              Remove
+            </button>
+          </div>
+        )}
+
+        <p className="text-xs text-blue-600 mt-3">
+          💡 <strong>Tip:</strong> Upload your own DRB to skip auto-generation and save ~3 minutes & ~$1-2
+        </p>
+      </div>
+
       {/* Optional Context Files Section */}
       <div className="w-full p-6 bg-gray-50 border-2 border-gray-200 rounded-lg">
         <h3 className="text-lg font-semibold mb-2 text-gray-800">

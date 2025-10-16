@@ -94,6 +94,7 @@ export interface StartFullAnalysisRequest {
   company_name: string;
   company_url: string;
   deepstack_job_id: string;
+  deep_research_brief_file?: File;
   additional_context_files?: File[];
 }
 

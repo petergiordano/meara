@@ -299,6 +299,7 @@ async def debug_job(job_id: str):
 async def start_full_analysis(
     background_tasks: BackgroundTasks,
     deepstack_job_id: str = Form(...),
+    deep_research_brief_file: Optional[UploadFile] = File(None),
     additional_context_files: List[UploadFile] = File(default=[])
 ):
     """
@@ -306,6 +307,7 @@ async def start_full_analysis(
 
     Accepts multipart/form-data with:
     - deepstack_job_id: Job ID from completed DeepStack analysis
+    - deep_research_brief_file: Optional Deep Research Brief file (PDF, TXT, MD, DOCX)
     - additional_context_files: Optional additional context docs (investor memo, pitch deck, etc.)
 
     Returns analysis_job_id immediately, runs 15-step workflow in background
@@ -331,6 +333,18 @@ async def start_full_analysis(
     context_dir = Path("context_inputs") / company_name.replace(" ", "_").lower()
     context_dir.mkdir(parents=True, exist_ok=True)
 
+    # Save Deep Research Brief file if provided (overrides any DRB from Phase 1)
+    drb_path = None
+    if deep_research_brief_file and deep_research_brief_file.filename:
+        drb_path = context_dir / f"drb_{deep_research_brief_file.filename}"
+        with open(drb_path, "wb") as f:
+            shutil.copyfileobj(deep_research_brief_file.file, f)
+        print(f"Saved DRB file to: {drb_path}")
+    elif deepstack_job.get("drb_file_path"):
+        # Use DRB from Phase 1 if no new DRB provided
+        drb_path = Path(deepstack_job["drb_file_path"])
+        print(f"Using existing DRB from Phase 1: {drb_path}")
+
     # Save additional context files if provided
     additional_files = []
     if additional_context_files:
@@ -354,7 +368,7 @@ async def start_full_analysis(
         "stage_icon": "⏳",
         "progress": 0,
         "additional_context_files": additional_files,
-        "drb_file_path": deepstack_job.get("drb_file_path")
+        "drb_file_path": str(drb_path) if drb_path else None
     }
 
     # Run MEARA workflow in background
