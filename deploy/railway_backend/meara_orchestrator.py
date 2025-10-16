@@ -16,8 +16,11 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv(Path(__file__).parent.parent / ".env")
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize OpenAI client with Assistants API v2
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    default_headers={"OpenAI-Beta": "assistants=v2"}
+)
 
 # Load assistant configuration
 def load_assistant_config():
