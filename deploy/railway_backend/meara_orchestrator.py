@@ -80,21 +80,25 @@ def call_assistant(assistant_id, message_content, thread_id=None):
 
     # Create or use existing thread
     if thread_id is None:
-        thread = client.beta.threads.create()
+        thread = client.beta.threads.create(
+            extra_headers={"OpenAI-Beta": "assistants=v2"}
+        )
         thread_id = thread.id
 
     # Add message to thread
     client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
-        content=message_content
+        content=message_content,
+        extra_headers={"OpenAI-Beta": "assistants=v2"}
     )
 
     # Run assistant
     print("  🤖 Assistant working", end="", flush=True)
     run = client.beta.threads.runs.create(
         thread_id=thread_id,
-        assistant_id=assistant_id
+        assistant_id=assistant_id,
+        extra_headers={"OpenAI-Beta": "assistants=v2"}
     )
 
     # Wait for completion with progress dots
@@ -109,7 +113,8 @@ def call_assistant(assistant_id, message_content, thread_id=None):
 
         run = client.beta.threads.runs.retrieve(
             thread_id=thread_id,
-            run_id=run.id
+            run_id=run.id,
+            extra_headers={"OpenAI-Beta": "assistants=v2"}
         )
 
     print()  # New line after progress dots
@@ -119,7 +124,8 @@ def call_assistant(assistant_id, message_content, thread_id=None):
         messages = client.beta.threads.messages.list(
             thread_id=thread_id,
             order="desc",
-            limit=1
+            limit=1,
+            extra_headers={"OpenAI-Beta": "assistants=v2"}
         )
 
         # Extract response
