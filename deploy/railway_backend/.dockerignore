@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Testing and development
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Output directories (exclude from image)
+output/
+analysis_results/
+context_inputs/
+sample_data/

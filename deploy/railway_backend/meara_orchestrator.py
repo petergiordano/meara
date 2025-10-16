@@ -17,10 +17,13 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 # Initialize OpenAI client with Assistants API v2
+# VERSION: 2.0 - Fixed v1 deprecation (2025-10-16)
+print("[MEARA] Initializing OpenAI client with Assistants API v2 header")
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     default_headers={"OpenAI-Beta": "assistants=v2"}
 )
+print("[MEARA] OpenAI client initialized successfully with v2 API")
 
 # Load assistant configuration
 def load_assistant_config():
