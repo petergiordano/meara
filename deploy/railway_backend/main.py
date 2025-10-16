@@ -482,8 +482,7 @@ async def run_meara_full_analysis(
         state, report_file = run_meara_workflow(
             company_name=company_name,
             company_url=company_url,
-            deep_research_brief=drb_content,
-            deepstack_job_id=deepstack_job_id
+            deep_research_brief=drb_content
         )
 
         # Mark as completed
