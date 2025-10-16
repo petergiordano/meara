@@ -1,6 +1,8 @@
 """
 Railway Backend for DeepStack Website Analysis
 FastAPI service that runs DeepStack Collector and MEARA full analysis
+
+Update: Fixed Assistants API v2 compatibility
 """
 
 from fastapi import FastAPI, BackgroundTasks, HTTPException, File, UploadFile, Form
