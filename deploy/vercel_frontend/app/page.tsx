@@ -139,9 +139,11 @@ export default function Home() {
 
   // Sprint L.1: Full Analysis Handlers
   const handleFullAnalysisStart = (analysisJobId: string) => {
+    console.log('[Page] handleFullAnalysisStart called with:', analysisJobId);
     setFullAnalysisJobId(analysisJobId);
     setShowProgressTracker(true);
     setShowReport(false);
+    console.log('[Page] State updated - showProgressTracker: true, showReport: false');
   };
 
   const handleProgressComplete = (reportReady: boolean) => {

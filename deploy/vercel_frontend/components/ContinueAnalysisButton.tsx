@@ -100,6 +100,12 @@ export default function ContinueAnalysisButton({
     setError(null);
 
     try {
+      console.log('[ContinueAnalysisButton] Starting full analysis...', {
+        deepstackJobId,
+        hasDrbFile: !!drbFile,
+        contextFilesCount: contextFiles.length
+      });
+
       const response = await startFullAnalysis({
         company_name: companyName,
         company_url: companyUrl,
@@ -108,8 +114,15 @@ export default function ContinueAnalysisButton({
         additional_context_files: contextFiles.length > 0 ? contextFiles : undefined,
       });
 
+      console.log('[ContinueAnalysisButton] Analysis started successfully:', response);
+
       // Call callback with analysis job ID
       onAnalysisStarted(response.analysis_job_id);
+
+      console.log('[ContinueAnalysisButton] Callback called with analysis_job_id:', response.analysis_job_id);
+
+      // Scroll to top to show progress tracker
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to start analysis';
