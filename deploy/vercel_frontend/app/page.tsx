@@ -26,6 +26,7 @@ export default function Home() {
   // State
   const [companyName, setCompanyName] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
+  const [deepstackJsonFile, setDeepstackJsonFile] = useState<File | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [result, setResult] = useState<DeepStackResult | null>(null);
@@ -47,6 +48,35 @@ export default function Home() {
     setError(null);
 
     try {
+      // Option 1: Upload existing DeepStack JSON (skip analysis)
+      if (deepstackJsonFile) {
+        console.log('[Page] Loading DeepStack JSON from file:', deepstackJsonFile.name);
+
+        const fileText = await deepstackJsonFile.text();
+        const jsonData = JSON.parse(fileText);
+
+        // Generate a fake job_id for this uploaded result
+        const fakeJobId = `uploaded-${Date.now()}`;
+
+        // Store in jobs state with completed status
+        setJobId(fakeJobId);
+        setResult(jsonData);
+        setLoading(false);
+
+        // Create a completed status
+        setStatus({
+          job_id: fakeJobId,
+          status: 'completed',
+          company_name: companyName || 'Unknown',
+          company_url: companyUrl || 'Unknown',
+          progress: 100
+        });
+
+        console.log('[Page] DeepStack JSON loaded successfully');
+        return;
+      }
+
+      // Option 2: Run DeepStack analysis on URL
       // Create FormData for API request
       const formData = new FormData();
       formData.append('company_name', companyName);
@@ -130,6 +160,7 @@ export default function Home() {
   const handleReset = () => {
     setCompanyName('');
     setCompanyUrl('');
+    setDeepstackJsonFile(null);
     setJobId(null);
     setStatus(null);
     setResult(null);
@@ -248,9 +279,51 @@ export default function Home() {
                 />
               </div>
 
+              {/* Optional: Upload DeepStack JSON */}
+              <div className="pt-4 border-t-2" style={{ borderColor: '#e5ecea' }}>
+                <label
+                  htmlFor="deepstackJson"
+                  className="block text-sm font-medium mb-2"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    color: '#060119'
+                  }}
+                >
+                  Or skip analysis - upload DeepStack JSON
+                </label>
+                <p className="mb-3 text-xs" style={{
+                  fontFamily: 'var(--font-outfit)',
+                  color: '#528577'
+                }}>
+                  For testing: Upload a pre-existing DeepStack JSON file to skip the analysis step
+                </p>
+                <input
+                  id="deepstackJson"
+                  type="file"
+                  accept=".json"
+                  onChange={(e) => setDeepstackJsonFile(e.target.files?.[0] || null)}
+                  disabled={loading}
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    fontFamily: 'var(--font-outfit)',
+                    borderColor: '#7da399',
+                    color: '#060119',
+                    backgroundColor: loading ? '#f6f6f6' : '#ffffff'
+                  }}
+                />
+                {deepstackJsonFile && (
+                  <p className="mt-2 text-sm" style={{
+                    fontFamily: 'var(--font-outfit)',
+                    color: '#e5a819'
+                  }}>
+                    ✓ {deepstackJsonFile.name} selected - will skip analysis
+                  </p>
+                )}
+              </div>
+
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || (!companyUrl && !deepstackJsonFile)}
                 className="w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
                 style={{
                   fontFamily: 'var(--font-outfit)',
@@ -258,7 +331,7 @@ export default function Home() {
                   color: '#ffffff'
                 }}
               >
-                {loading ? 'Analyzing...' : 'Analyze website'}
+                {loading ? 'Loading...' : deepstackJsonFile ? 'Load DeepStack JSON' : 'Analyze website'}
               </button>
             </form>
           </div>
